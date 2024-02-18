@@ -1,7 +1,8 @@
 import React from "react";
-
 import { Flex, Image } from "@chakra-ui/react";
+
 import Searchbar from "./Searchbar";
+import Accountbar from "./Accountbar/Accountbar";
 
 const Navbar: React.FC = () => {
     return (
@@ -11,6 +12,7 @@ const Navbar: React.FC = () => {
                 <Image src="/images/name.svg" height="18px" display={{ base: "none", md: "unset" }}/>
             </Flex>
             <Searchbar/>
+            <Accountbar/>
         </Flex>
     );
 };
