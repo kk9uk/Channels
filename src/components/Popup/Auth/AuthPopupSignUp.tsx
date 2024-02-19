@@ -1,17 +1,39 @@
-import { FunctionComponent, useState, ChangeEvent } from "react";
+import { FunctionComponent, useState, ChangeEvent, FormEvent } from "react";
 import { Input, Button, Flex, Text } from "@chakra-ui/react";
 import { useSetRecoilState } from "recoil";
 import { authPopupState } from "../../../state/authPopupState";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase/clientApp";
+import { FIREBASE_ERROR } from "../../../firebase/error";
 
 const AuthPopupSignUp: FunctionComponent = () => {
+    const setAuthPopupState = useSetRecoilState(authPopupState);
     const [credentials, setCredentials] = useState({
         email: "",
         password: "",
         confirmPassword: ""
     });
-    const setAuthPopupState = useSetRecoilState(authPopupState);
+    const [clientError, setClientError] = useState("");
+    const [
+        createUserWithEmailAndPassword,
+        user,
+        isLoading,
+        serverError
+    ] = useCreateUserWithEmailAndPassword(auth);
 
-    const onSubmit = () => {};
+    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (clientError) setClientError("");
+        if (credentials.password !== credentials.confirmPassword) {
+            setClientError("Passwords do not match");
+            return;
+        }
+        else if (credentials.password.length < 6) {
+            setClientError("Password has to be at least 6 characters long");
+            return;
+        }
+        createUserWithEmailAndPassword(credentials.email, credentials.password);
+    };
 
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         setCredentials((prev) => ({
@@ -32,14 +54,17 @@ const AuthPopupSignUp: FunctionComponent = () => {
                 fontSize="10pt"
                 _placeholder={{ color: "gray.500" }}
                 _hover={{
+                    bg: "white",
                     border: "1px solid",
-                    borderColor: "blue.500"
+                    borderColor: "blue.500",
                 }}
                 _focus={{
                     outline: "none",
+                    bg: "white",
                     border: "1px solid",
-                    borderColor: "blue.500"
+                    borderColor: "blue.500",
                 }}
+                bg="gray.50"
             />
             <Input
                 required
@@ -51,14 +76,17 @@ const AuthPopupSignUp: FunctionComponent = () => {
                 fontSize="10pt"
                 _placeholder={{ color: "gray.500" }}
                 _hover={{
+                    bg: "white",
                     border: "1px solid",
-                    borderColor: "blue.500"
+                    borderColor: "blue.500",
                 }}
                 _focus={{
                     outline: "none",
+                    bg: "white",
                     border: "1px solid",
-                    borderColor: "blue.500"
+                    borderColor: "blue.500",
                 }}
+                bg="gray.50"
             />
             <Input
                 required
@@ -70,16 +98,31 @@ const AuthPopupSignUp: FunctionComponent = () => {
                 fontSize="10pt"
                 _placeholder={{ color: "gray.500" }}
                 _hover={{
+                    bg: "white",
                     border: "1px solid",
-                    borderColor: "blue.500"
+                    borderColor: "blue.500",
                 }}
                 _focus={{
                     outline: "none",
+                    bg: "white",
                     border: "1px solid",
-                    borderColor: "blue.500"
+                    borderColor: "blue.500",
                 }}
+                bg="gray.50"
             />
-            <Button width="100%" height="36px" mt={2} mb={2} type="submit">Sign Up</Button>
+            <Text textAlign="center" color="red" fontSize="10pt">
+                {clientError || FIREBASE_ERROR[serverError?.message as keyof typeof FIREBASE_ERROR]}
+            </Text>
+            <Button
+                width="100%"
+                height="36px"
+                mt={2}
+                mb={2}
+                type="submit"
+                isLoading={isLoading}
+            >
+                Sign Up
+            </Button>
             <Flex fontSize="9pt" justifyContent="center">
                 <Text mr={1}>Already have an account?</Text>
                 <Text
