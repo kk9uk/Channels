@@ -45,13 +45,13 @@ const AuthPopupResetPassword: React.FC = () => {
                             fontSize="10pt"
                             _placeholder={{ color: "gray.500" }}
                             _hover={{
-                                bg: "white",
+                                bg: "#FFFFFF",
                                 border: "1px solid",
                                 borderColor: "blue.500",
                             }}
                             _focus={{
                                 outline: "none",
-                                bg: "white",
+                                bg: "#FFFFFF",
                                 border: "1px solid",
                                 borderColor: "blue.500",
                             }}
