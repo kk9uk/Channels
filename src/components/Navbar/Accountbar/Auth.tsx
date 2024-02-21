@@ -19,8 +19,8 @@ const Auth: React.FC = () => {
             </Button>
             <Button variant="outline"
                 height="30px"
-                display={{ base: "none", md: "flex" }}
-                width={{ md: "85px" }}
+                display={{ sm: "none", md: "flex" }}
+                width={{ sm: "0px", md: "85px" }}
                 mr={2}
                 onClick={() => setAuthPopupState({ isOpened: true, view: "Login" })}
             >
