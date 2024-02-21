@@ -1,4 +1,4 @@
-import React from "react";
+import { FunctionComponent, useEffect } from "react";
 import
 {
     Modal,
@@ -12,14 +12,19 @@ import
 }
 from "@chakra-ui/react";
 
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase/clientApp";
+
 import { useRecoilState } from "recoil";
 import { authPopupState } from "../../../state/authPopupState";
 
 import AuthPopupInput from "./AuthPopupInput";
 import AuthPopupOAuth from "./AuthPopupOAuth";
+import AuthPopupResetPassword from "./AuthPopupResetPassword";
 
-const AuthPopup: React.FC = () => {
+const AuthPopup: FunctionComponent = () => {
     const [popupState, setPopupState] = useRecoilState(authPopupState);
+    const [user, isLoading, serverError] = useAuthState(auth);
 
     const onClose = () => {
         setPopupState(prev => ({
@@ -27,6 +32,10 @@ const AuthPopup: React.FC = () => {
             isOpened: false
         }));
     };
+
+    useEffect(() => {
+        if (user) onClose();
+    }, [user]);
 
     return (
         <>
@@ -48,9 +57,13 @@ const AuthPopup: React.FC = () => {
                             justify="center"
                             width="70%"
                         >
-                            <AuthPopupOAuth/>
-                            <Text color="gray.500" fontWeight={700}>OR</Text>
-                            <AuthPopupInput/>
+                            {popupState.view === "Login" || popupState.view === "Sign Up" ? (
+                                <>
+                                    <AuthPopupOAuth/>
+                                    <Text color="gray.500" fontWeight={700}>OR</Text>
+                                    <AuthPopupInput/>
+                                </>
+                            ) : <AuthPopupResetPassword/>}
                         </Flex>
                     </ModalBody>
                 </ModalContent>
