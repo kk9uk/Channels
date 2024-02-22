@@ -1,5 +1,5 @@
 # ![icon & name](https://raw.githubusercontent.com/kk9uk/channels/main/public/images/icon%20%26%20name.png)
-> Channeling you and I.
+> Channeling you & I.
 
 Channels is a social media platform that serves as a virtual community where users can share, discuss, and discover a wide range of topics and interests.
 It is organized into individual subcommunities, known as channels, which are dedicated to user-specified subjects.
