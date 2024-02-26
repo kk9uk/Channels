@@ -8,9 +8,14 @@ import
 }
 from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
+import { User } from "firebase/auth";
 
-const Searchbar: React.FC = () => (
-    <Flex flexGrow={1} mr={2} align="center">
+type SearchbarProp = {
+    user: User;
+}
+
+const Searchbar: React.FC<SearchbarProp> = ({ user }) => (
+    <Flex flexGrow={1} mr={user ? 0 : 2} align="center">
         <InputGroup ml={2}>
             <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.300" mb={1}/>}/>
             <Input

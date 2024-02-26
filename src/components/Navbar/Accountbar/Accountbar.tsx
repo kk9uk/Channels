@@ -10,7 +10,7 @@ import DropdownMenu from "./DropdownMenu";
 
 type AccountbarProp = {
     user?: User | null;
-}
+};
 
 const Accountbar: React.FC<AccountbarProp> = ({ user }) => (
     <>

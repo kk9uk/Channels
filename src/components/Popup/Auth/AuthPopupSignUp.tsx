@@ -1,10 +1,12 @@
-import { FunctionComponent, useState, ChangeEvent, FormEvent } from "react";
+import { FunctionComponent, useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { Input, Button, Flex, Text } from "@chakra-ui/react";
 import { useSetRecoilState } from "recoil";
 import { authPopupState } from "../../../state/authPopupState";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "../../../firebase/clientApp";
+import { auth, firestore } from "../../../firebase/clientApp";
 import { FIREBASE_ERROR } from "../../../firebase/error";
+import { addDoc, collection } from "firebase/firestore";
+import { User } from "firebase/auth";
 
 const AuthPopupSignUp: FunctionComponent = () => {
     const setAuthPopupState = useSetRecoilState(authPopupState);
@@ -41,6 +43,16 @@ const AuthPopupSignUp: FunctionComponent = () => {
             [event.target.name]: event.target.value
         }));
     };
+
+    const createUserDocument = async (user: User) => {
+        await addDoc(collection(firestore, "users"), JSON.parse(JSON.stringify(user)));
+    };
+
+    useEffect(() => {
+        if (user) {
+            createUserDocument(user.user);
+        }
+    }, [user]);
 
     return (
         <form onSubmit={onSubmit}>
