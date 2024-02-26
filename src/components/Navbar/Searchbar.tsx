@@ -12,7 +12,7 @@ import { User } from "firebase/auth";
 
 type SearchbarProp = {
     user: User;
-};
+}
 
 const Searchbar: React.FC<SearchbarProp> = ({ user }) => (
     <Flex flexGrow={1} mr={user ? 0 : 2} align="center">
