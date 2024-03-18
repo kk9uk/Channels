@@ -50,7 +50,8 @@ const CreateChannelPopup: FunctionComponent<CreateChannelPopupProp> = ({ isOpene
                 transaction.set(doc(firestore, `users/${user?.uid}/channels`, channelName),
                                 {
                                     channelName: channelName,
-                                    isAdmin: true
+                                    isAdmin: true,
+                                    iconURL: ""
                                 }
                 );
             });

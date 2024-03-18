@@ -32,6 +32,7 @@ const useChannelState = () => {
             const batch = writeBatch(firestore);
             const newChannel: channel = {
                 channelName: channel.channelName,
+                isAdmin: user?.uid === channel.creatorId,
                 iconURL: channel.iconURL || ""
             };
             batch.set(doc(firestore, `users/${user?.uid}/channels`, channel.channelName), newChannel);
