@@ -8,6 +8,7 @@ import safeJsonStringify from "safe-json-stringify";
 import ChannelNotFound from "../../components/Channel/ChannelNotFound";
 import ChannelHeader from "../../components/Channel/ChannelHeader";
 import ContentLayout from "../../components/Layout/ContentLayout";
+import CreatePostLink from "../../components/Channel/CreatePostLink";
 
 type ChannelPageProp = {
     channel: Channel;
@@ -23,7 +24,7 @@ const ChannelPage: React.FC<ChannelPageProp> = ({ channel }) => {
             <ChannelHeader channel={channel}/>
             <ContentLayout>
                 <>
-                    <div>Left</div>
+                    <CreatePostLink/>
                 </>
                 <>
                     <div>Right</div>
