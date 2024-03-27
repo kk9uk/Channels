@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Flex, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { User } from "firebase/auth";
-import { collection, doc, setDoc } from "firebase/firestore";
-import {firestore} from "../../firebase/clientApp";
+import { collection, getDocs } from "firebase/firestore";
+import { firestore } from "../../firebase/clientApp";
 
-type SearchbarProp = {
-    user: User;
+type Channel = {
+    id: string;
+    name: string;
 };
 
 type SearchbarProps = {
@@ -15,17 +16,38 @@ type SearchbarProps = {
     setTargetChannel: (value: string) => void;
 };
 
-
 const Searchbar: React.FC<SearchbarProps> = ({
-                                                     user,
-                                                     targetChannel,
-                                                     setTargetChannel,
-                                                     }) => {
-    const dbRef = collection(firestore, "channels");
+                                                 user,
+                                                 targetChannel,
+                                                 setTargetChannel,
+                                             }) => {
+    const [channelList, setChannelList] = useState<Channel[]>([]);
+    const [filteredChannels, setFilteredChannels] = useState<Channel[]>([]);
+
+    useEffect(() => {
+
+        const fetchChannels = async () => {
+            const querySnapshot = await getDocs(collection(firestore, "channels"));
+            const channels = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                name: doc.data().name,
+            }));
+            setChannelList(channels);
+        };
+
+        fetchChannels();
+    }, []);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTargetChannel(e.target.value);
-        // console.log("Target Channel:", e.target.value);
+        const inputValue = e.target.value;
+        setTargetChannel(inputValue);
+
+        const filtered = channelList.filter((channel) =>
+            channel.name.toLowerCase().includes(inputValue.toLowerCase())
+        );
+        setFilteredChannels(filtered);
     };
+
     return (
         <Flex flexGrow={1} mr={user ? 0 : 2} align="center">
             <InputGroup ml={2}>
@@ -41,15 +63,20 @@ const Searchbar: React.FC<SearchbarProps> = ({
                     _hover={{
                         bg: "#FFFFFF",
                         border: "1px solid",
-                        borderColor: "#CDF6F9"
+                        borderColor: "#CDF6F9",
                     }}
                     _focus={{
                         outline: "none",
                         border: "1px solid",
-                        borderColor: "#CDF6F9"
+                        borderColor: "#CDF6F9",
                     }}
+                    value={targetChannel}
+                    onChange={handleInputChange}
                 />
             </InputGroup>
+            {filteredChannels.map((channel) => (
+                <div key={channel.id}>{channel.name}</div>
+            ))}
         </Flex>
     );
 };
