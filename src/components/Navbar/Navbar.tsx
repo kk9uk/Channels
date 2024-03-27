@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Flex, Image } from "@chakra-ui/react";
 
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -10,7 +10,7 @@ import Channelbar from "./Channelbar/Channelbar";
 
 const Navbar: React.FC = () => {
     const [user, isLoading, serverError] = useAuthState(auth);
-
+    const [targetChannel, setTargetChannel] = useState("");
     return (
         <Flex bg="#1A83A8" height="44px" padding="6px 12px">
             <Flex align="center">
@@ -18,7 +18,11 @@ const Navbar: React.FC = () => {
                 <Image src="/images/name.svg" height="18px" display={{ base: "none", md: "unset" }}/>
             </Flex>
             {user && <Channelbar/>}
-            <Searchbar user={user}/>
+            <Searchbar
+                user={user}
+                targetChannel={targetChannel}
+                setTargetChannel={setTargetChannel}
+            />
             <Accountbar user={user}/>
         </Flex>
     );
