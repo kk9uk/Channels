@@ -7,6 +7,7 @@ import { Post } from "../../state/postState";
 import PostItem from "./PostItem";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Stack } from "@chakra-ui/react";
+import PostLoader from "./PostLoader";
 
 type PostsProps = {
     channelData: Channel;
@@ -20,6 +21,8 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
 
     const getPosts = async () => {
         try {
+            setLoading(true);
+
             const postsQuery = query(
                 collection(firestore, 'posts'),
                 where("channelName", "==", channelData.channelName),
@@ -38,6 +41,8 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
         } catch (error: any) {
             console.log("Fetch Posts error", error.message);
         }
+
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -46,18 +51,25 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
 
 
     return(
-        <Stack>
-            {postStateVal.postList.map((item) => (
-                <PostItem 
-                    post={item} 
-                    isCreator={user?.uid === item.creatorId}
-                    numPushPull={undefined}
-                    onPushPull={onPushPull}
-                    onSelect={onSelect}
-                    onDelete={onDelete}
-                />
-            ))}
-        </Stack>
+        <>
+            {loading ? (
+                <PostLoader/>
+            ) : (
+            <Stack>
+                {postStateVal.postList.map((item) => (
+                    <PostItem
+                        key={item.channelName}
+                        post={item} 
+                        isCreator={user?.uid === item.creatorId}
+                        numPushPull={undefined}
+                        onPushPull={onPushPull}
+                        onSelect={onSelect}
+                        onDelete={onDelete}
+                    />
+                ))}
+            </Stack>
+            )}
+        </>
     )
 };
 

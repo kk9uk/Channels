@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Post } from "../../state/postState";
-import { Flex, Icon, Image, Stack, Text } from "@chakra-ui/react";
+import { Flex, Icon, Image, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { IoArrowDownCircleOutline, 
         IoArrowDownCircleSharp, 
         IoArrowRedoOutline, 
@@ -28,6 +28,8 @@ const PostItem: React.FC<PostItemProps> = ({
     onSelect,
     onDelete,
 }) => {
+    const [loadingImg, setLoadingImg] = useState(true);
+
     return (
         <Flex
             border = "1px solid" 
@@ -74,14 +76,25 @@ const PostItem: React.FC<PostItemProps> = ({
                             Posted by {post.creatorName} {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
                         </Text>
                     </Stack>
+
                     <Text fontSize={"12pt"} fontWeight={600}>
                         {post.title}
                     </Text>
+
                     {post.imageURL && (
                         <Flex justify="center" align="center" p={2}>
-                            <Image src={post.imageURL} maxHeight="460px" alt="Post Image"/>
+                            {loadingImg && (
+                                <Skeleton height="200px" width="100%" borderRadius={4}/>
+                            )}
+                            <Image 
+                                src={post.imageURL} 
+                                maxHeight="460px" 
+                                alt="Post Image" 
+                                display={loadingImg ? "none" : "unset"}
+                                onLoad={() => setLoadingImg(false)}/>
                         </Flex>
                     )}
+
                 </Stack>
 
                 <Flex ml={1} mb={0.5} color="gray.500" fontWeight={600}>
