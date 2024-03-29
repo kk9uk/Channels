@@ -14,7 +14,7 @@ import { Center, Square, Circle } from "@chakra-ui/react";
 import { Container } from "@chakra-ui/react";
 import TextInputs from "../Posts/PostForm/TextInputs";
 import CreateChannelPopup from "../Popup/CreateChannel/CreateChannelPopup";
-import UserImageEditPopupProp from "./UserIageEditPopup";
+import UserImageEditPopupProp from "./UserImageEditPopup";
 
 type TextInputsProps = {
     textInputs: {
