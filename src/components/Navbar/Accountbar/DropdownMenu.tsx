@@ -63,7 +63,7 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
                                 Profile
                             </Flex>
                         </MenuItem>
-                        <MenuDivider/>
+                        <MenuDivider/>                        
                         <MenuItem
                             fontSize="10pt"
                             fontWeight={700}
