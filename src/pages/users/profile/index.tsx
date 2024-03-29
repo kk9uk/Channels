@@ -13,14 +13,6 @@ const UserPage: () => void = () => {
     return (
         <>
             <UserHeader/>
-            <ContentLayout>
-                <>
-                    <div>left</div>
-                </>
-                <>
-                    <div>Right</div>
-                </>
-            </ContentLayout>
         </>
     );
 
