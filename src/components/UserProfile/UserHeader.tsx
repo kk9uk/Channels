@@ -12,9 +12,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@chakra-ui/react";
 import { FaQuestionCircle } from "react-icons/fa";
 import { Center, Square, Circle } from "@chakra-ui/react";
 import { Container } from "@chakra-ui/react";
-import TextInputs from "../Posts/PostForm/TextInputs";
-import CreateChannelPopup from "../Popup/CreateChannel/CreateChannelPopup";
-import UserImageEditPopupProp from "./UserImageEditPopup";
+
 
 type TextInputsProps = {
     textInputs: {
@@ -27,6 +25,7 @@ type TextInputsProps = {
     loading: boolean;
 };
 
+
 const UserHeader: React.FC = () => {
     const [user, setUser] = useState<User | null>(null);
     const [introduction, setIntroduction] = useState<string>("");
@@ -37,8 +36,8 @@ const UserHeader: React.FC = () => {
     const [textInput, setTextInput] = useState({
         title: "",
         body: "",
-    });
-    const [isOpened, setIsOpened] = useState(false);
+    })
+
     // const onTextChange = ({
     //                           target: { name, value },
     //                       }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -183,7 +182,7 @@ const UserHeader: React.FC = () => {
                     <Flex padding="10px 16px" alignContent="flex-start" justifyContent="left">
                         {editMode && (
                             <>
-                                <Button marginRight="4" height="30px" fontSize="12pt" pr={6} pl={6} onClick={() => setIsOpened(true)}>
+                                <Button marginRight="4" height="30px" fontSize="12pt" pr={6} pl={6}>
                                     Edit your image
                                 </Button>
                                 <Button marginRight="4" height="30px" fontSize="12pt" pr={6} pl={6} onClick={saveIntroduction}>

@@ -1,18 +1,24 @@
-import React from "react";
+import React, {useState} from "react";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "../../../firebase/clientApp";
 import ContentLayout from "../../../components/Layout/ContentLayout";
 import UserHeader from "../../../components/UserProfile/UserHeader";
+import UserImageEditPopup from "../../../components/UserProfile/UserImageEditPopup";
 
 
 
-const UserPage: () => void = () => {
-    const [user] = useAuthState(auth);
+const UserPage: React.FC = () => {
+    const [isOpened, setIsOpened] = useState(false);
 
     // @ts-ignore
     return (
+
         <>
-            <UserHeader/>
+            {/*<UserImageEditPopup isOpened={true} onClose={() => setIsOpened(false)}/>*/}
+            <>
+                <UserHeader/>
+            </>
+
         </>
     );
 
