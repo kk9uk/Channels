@@ -1,4 +1,4 @@
-import { Flex, Icon } from '@chakra-ui/react';
+import { Alert, AlertIcon, AlertTitle, CloseButton, Flex, Icon } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import { BiPoll } from "react-icons/bi";
 import { BsLink45Deg, BsMic } from "react-icons/bs";
@@ -7,8 +7,16 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import TabItem from './TabItem';
 import TextInputs from './PostForm/TextInputs';
 import ImageUpload from './PostForm/ImageUpload';
+import { User } from 'firebase/auth';
+import { useRouter } from 'next/router';
+import { Post } from '../../state/postState';
+import { Timestamp, addDoc, collection, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { firestore, storage } from '../../firebase/clientApp';
+import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 
-type NewPostFormProps = {};
+type NewPostFormProps = {
+    user: User;
+};
 
 const formTabs: TabItem[] = [
     {
@@ -38,7 +46,8 @@ export type TabItem = {
     icon: typeof Icon.arguments;
 }
 
-const NewPostForm: React.FC<NewPostFormProps> = () => {
+const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
+    const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
     const [textInput, setTextInput] = useState({
         title: "",
@@ -46,9 +55,41 @@ const NewPostForm: React.FC<NewPostFormProps> = () => {
     });
     const [selectedFile, setSelecedFile] = useState<string>();
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     const handleCreatePost = async() => {
+        const { channelName } = router.query;
+        console.log(channelName);
+        const newPost: Post = {
+            channelName: channelName as string,
+            creatorId: user?.uid,
+            creatorName: user.displayName as string,
+            title: textInput.title,
+            body: textInput.body,
+            numComments: 0,
+            numPushPull: 0,
+            createdAt: serverTimestamp() as Timestamp,
+        };
 
+        try {
+            const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
+
+            if (selectedFile) {
+                const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
+                await uploadString(imageRef, selectedFile, 'data_url');
+                const downloadURL = await getDownloadURL(imageRef);
+
+                await updateDoc(postDocRef, {
+                    imageURL: downloadURL,
+                });
+            }
+        } catch (error: any) {
+            console.log("CreatePost error", error.message);
+            setError(true);
+        }
+        setLoading(false);
+
+        // router.back();
     };
 
     const onSelectedImage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,6 +144,15 @@ const NewPostForm: React.FC<NewPostFormProps> = () => {
                     )
                 }
             </Flex>
+            {error && (
+                <Alert status = "error">
+                    <AlertIcon/>
+                    <AlertTitle mr = {2}>
+                        Create post error!
+                    </AlertTitle>
+                    <CloseButton position = "absolute" right = "8px" top = "8px"/>
+                </Alert>
+            )}
         </Flex>      
     );
 };
