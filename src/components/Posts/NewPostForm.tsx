@@ -13,6 +13,7 @@ import { Post } from '../../state/postState';
 import { Timestamp, addDoc, collection, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { firestore, storage } from '../../firebase/clientApp';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import useSelectFile from '../../hooks/useSelectFile';
 
 type NewPostFormProps = {
     user: User;
@@ -53,13 +54,16 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
         title: "",
         body: "",
     });
-    const [selectedFile, setSelecedFile] = useState<string>();
+
+    const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
     const handleCreatePost = async() => {
         const { channelName } = router.query;
         // console.log(channelName);
+
+        // error of Post.id undefined, DO NOT touch this
         const newPost: Post = {
             channelName: channelName as string,
             creatorId: user?.uid,
@@ -76,7 +80,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
 
             if (selectedFile) {
                 const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
-                await uploadString(imageRef, selectedFile, 'data_url');
+                await uploadString(imageRef, selectedFile, "data_url");
                 const downloadURL = await getDownloadURL(imageRef);
 
                 await updateDoc(postDocRef, {
@@ -91,18 +95,6 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
         }
         setLoading(false);
     };
-
-    const onSelectedImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const reader = new FileReader();
-        if (event.target.files?.[0]) {
-            reader.readAsDataURL(event.target.files[0]);
-        }
-        reader.onload = (readerEvent) => {
-            if (readerEvent.target?.result) {
-            setSelecedFile(readerEvent.target.result as string);
-            };
-        };
-    }
 
     const onTextChange = ({
         target: { name, value },
@@ -137,9 +129,9 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
                     selectedTab === "Image & Video" && (
                         <ImageUpload
                             selectedFile={selectedFile}
-                            onSelectedImage={onSelectedImage}
+                            onSelectedImage={onSelectFile}
                             setSelectedTab={setSelectedTab}
-                            setSelectedFile={setSelecedFile}
+                            setSelectedFile={setSelectedFile}
                         />
                     )
                 }

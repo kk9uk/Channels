@@ -14,15 +14,17 @@ import { VscAccount } from "react-icons/vsc";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineLogin } from "react-icons/md";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
-import { auth } from "../../../firebase/clientApp";
+import {auth, firestore, storage} from "../../../firebase/clientApp";
 import { authPopupState } from "../../../state/authPopupState";
 import { channelState } from "../../../state/channelState";
+import { useRouter } from "next/router";
 
 type DropdownMenuProp = {
     user?: User | null;
 };
 
 const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
+    const router = useRouter();
     const setAuthPopupState = useSetRecoilState(authPopupState);
     const resetChannelState = useResetRecoilState(channelState);
 
@@ -30,6 +32,11 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
         await signOut(auth);
         resetChannelState();
     };
+
+    const profile =  () => {
+        router.push(`/users/profile`);
+    }
+
 
     return (
         <Menu>
@@ -57,6 +64,7 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
                             fontSize="10pt"
                             fontWeight={700}
                             _hover={{ bg: "blue.500", color: "#FFFFFF" }}
+                            onClick={profile}
                         >
                             <Flex align="center">
                                 <Icon fontSize={20} mr={2} as={CgProfile}/>

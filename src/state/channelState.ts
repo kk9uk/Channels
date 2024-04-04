@@ -20,7 +20,7 @@ export interface channel {
 
 interface ChannelState {
   channels: channel[];
-  currentChannel: Channel;
+  currentChannel?: Channel;
 }
 
 export const defaultChannel: Channel = {
