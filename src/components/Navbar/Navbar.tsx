@@ -20,8 +20,6 @@ const Navbar: React.FC = () => {
             {user && <Channelbar/>}
             <Searchbar
                 user={user}
-                targetChannel={targetChannel}
-                setTargetChannel={setTargetChannel}
             />
             <Accountbar user={user}/>
         </Flex>
