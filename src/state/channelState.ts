@@ -20,6 +20,7 @@ export interface channel {
 
 interface ChannelState {
     channels: channel[];
+    currentChannel?: Channel;
 }
 
 export const channelState = atom<ChannelState>({

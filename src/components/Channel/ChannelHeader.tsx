@@ -18,8 +18,17 @@ const ChannelHeader: React.FC<ChannelHeaderProp> = ({ channel }) => {
             <Box height="50%" bg="blue.500"/>
             <Flex justify="center" bg="#FFFFFF" flexGrow={1}>
                 <Flex width="95%">
-                    {channel.iconURL ? (
-                        <Image/>
+                    {channelStateValue.currentChannel?.iconURL ? (
+                        <Image 
+                            borderRadius="full"
+                            boxSize="66px"
+                            src={channelStateValue.currentChannel.iconURL}
+                            alt="icon"
+                            position="relative"
+                            top={-3}
+                            color="blue.500"
+                            border="4px solid white"
+                        />
                     ) : (
                         <Icon
                             as={FaQuestionCircle}
