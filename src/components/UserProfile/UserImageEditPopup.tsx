@@ -1,8 +1,8 @@
-import React, { FunctionComponent } from "react";
+import React, {FunctionComponent, useRef, useState} from "react";
 import {
     Box,
     Button,
-    Divider,
+    Divider, Flex, Image,
     Input,
     Modal,
     ModalBody,
@@ -10,9 +10,11 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
-    ModalOverlay,
+    ModalOverlay, Stack,
     Text,
 } from "@chakra-ui/react";
+import ImageUpload from "../Posts/PostForm/ImageUpload";
+import useSelectFile from "../../hooks/useSelectFile";
 
 type EditImagePopupProp = {
     isOpened: boolean;
@@ -23,11 +25,23 @@ const UserImageEditPopupProp: FunctionComponent<EditImagePopupProp> = ({
                                                                            isOpened,
                                                                            onClose,
                                                                        }) => {
+    const selectedFileRef = useRef<HTMLInputElement>(null);
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
 
-        // Perform any necessary image upload logic here
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                const imageDataURL = reader.result;
+
+                setSelectedFile(imageDataURL as string);
+            };
+
+            reader.readAsDataURL(file);
+        }
     };
+    const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile();
 
     return (
         <>
@@ -40,13 +54,55 @@ const UserImageEditPopupProp: FunctionComponent<EditImagePopupProp> = ({
                     padding={3}
                     ml={1}
                 >
-                    Edit your own profile image
                 </ModalHeader>
                 <ModalContent>
                     <ModalBody>
                         <Box>
-                            <Text>Choose an image to upload:</Text>
-                            <Input type="file" onChange={handleImageUpload} />
+                            <Flex justify={"center"} align={"center"} width={"100%"}>
+                                {selectedFile ? (
+                                    <>
+                                        <Image src = {selectedFile} maxWidth = "400px" maxHeight = "400px" />
+                                        <Stack direction = "row" mt = {4}>
+                                            <Button
+                                                variant = "outline"
+                                                height = "28px"
+                                                onClick = {() => setSelectedFile("")}
+                                            >
+                                                Remove image/video
+                                            </Button>
+                                        </Stack>
+                                    </>
+                                ) : (
+                                    <Flex
+                                        justify={"center"}
+                                        align={"center"}
+                                        p={20}
+                                        border={"1px dashed"}
+                                        borderColor={"gray.200"}
+                                        borderRadius={4}
+                                        width={"100%"}
+                                    >
+                                        <Button
+                                            variant={"outline"}
+                                            height={"28px"}
+                                            onClick={() =>
+                                                selectedFileRef.current?.click()
+                                            }
+                                        >
+                                            Upload
+                                        </Button>
+                                        <Input type="file" ref={selectedFileRef} onChange={handleImageUpload} hidden/>
+                                        {/*<input*/}
+                                        {/*    ref={selectedFileRef}*/}
+                                        {/*    type= "file"*/}
+                                        {/*    hidden*/}
+                                        {/*    onChange={onSelectedImage}*/}
+                                        {/*/>*/}
+                                        <Image src={selectedFile} alt={"selected file"} />
+
+                                    </Flex>
+                                )}
+                            </Flex>
                         </Box>
                     </ModalBody>
                     <ModalFooter>
