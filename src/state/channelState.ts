@@ -5,26 +5,38 @@ import { Timestamp } from "firebase/firestore";
  * while 'c'hannel serves as a type for objects from users/<uid>/channels subcollection,
  * fixing this would lead to serious headache, so I just leave it as it is...... */
 export interface Channel {
-    channelName: string;
-    creatorId: string;
-    noOfMember: number;
-    createdAt: Timestamp;
-    iconURL?: string;
+  channelName: string;
+  creatorId: string;
+  noOfMember: number;
+  createdAt: Timestamp;
+  iconURL?: string;
 }
 
 export interface channel {
-    channelName: string;
-    isAdmin?: boolean;
-    iconURL?: string;
+  channelName: string;
+  isAdmin?: boolean;
+  iconURL?: string;
 }
 
 interface ChannelState {
-    channels: channel[];
+  channels: channel[];
+  currentChannel: Channel;
 }
 
+export const defaultChannel: Channel = {
+  channelName: "",
+  creatorId: "",
+  noOfMember: 0,
+  createdAt: Timestamp.now(),
+  iconURL: "",
+};
+
+export const defaultChannelState: ChannelState = {
+  channels: [],
+  currentChannel: defaultChannel,
+};
+
 export const channelState = atom<ChannelState>({
-    key: "channelState",
-    default: {
-        channels: []
-    }
+  key: "channelState",
+  default: defaultChannelState,
 });

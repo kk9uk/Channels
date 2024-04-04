@@ -16,8 +16,9 @@ type PostItemProps = {
     isCreator: boolean;
     numPushPull?: number;
     onSelect: () => void;
-    onPushPull: () => {};
+    onPushPull: (post: Post, pushPull: number, channelName: string) => void;
     onDelete: (post: Post) => Promise<boolean>;
+    userPushPostValue?: number;
 };
 
 const PostItem: React.FC<PostItemProps> = ({
@@ -27,10 +28,11 @@ const PostItem: React.FC<PostItemProps> = ({
     onPushPull,
     onSelect,
     onDelete,
+    userPushPostValue,
 }) => {
     const [loadingImg, setLoadingImg] = useState(true);
     const [loadingDelete, setLoadingDelete] = useState(false);
-    const [ error, setError] = useState(false);
+    const [error, setError] = useState(false);
 
     const handleDelete = async () => {
         setLoadingDelete(true);
@@ -69,18 +71,18 @@ const PostItem: React.FC<PostItemProps> = ({
                 borderRadius={4}
             >
                 <Icon 
-                    as={numPushPull === 1 ? IoArrowUpCircleSharp : IoArrowUpCircleOutline}
+                    as={userPushPostValue === 1 ? IoArrowUpCircleSharp : IoArrowUpCircleOutline}
                     color={numPushPull === 1 ? "brand.100" : "gray.400"}
                     fontSize={22}
-                    onClick={onPushPull}
+                    onClick={() => onPushPull(post, 1, post.channelName)}
                     cursor="pointer"
                 />
                 <Text fontSize="9pt">{post.numPushPull}</Text>
                 <Icon 
-                    as={numPushPull === -1 ? IoArrowDownCircleSharp : IoArrowDownCircleOutline}
+                    as={userPushPostValue === -1 ? IoArrowDownCircleSharp : IoArrowDownCircleOutline}
                     color={numPushPull === -1 ? "#4379ff" : "gray.400"}
                     fontSize={22}
-                    onClick={onPushPull}
+                    onClick={() => onPushPull(post, -1, post.channelName)}
                     cursor="pointer"
                 />
             </Flex>

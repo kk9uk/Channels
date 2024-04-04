@@ -56,15 +56,19 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
                 <PostLoader/>
             ) : (
             <Stack>
-                {postStateVal.postList.map((item) => (
+                {postStateVal.postList.map((post: Post, index) => (
                     <PostItem
-                        key={item.id}
-                        post={item} 
-                        isCreator={user?.uid === item.creatorId}
-                        numPushPull={undefined}
+                        key={post.id}
+                        post={post} 
+                        isCreator={user?.uid === post.creatorId}
+                        numPushPull={postStateVal.postPushPulls.find(
+                            (pushPull) => pushPull.postId === post.id)?.pushPullValue}
                         onPushPull={onPushPull}
                         onSelect={onSelect}
                         onDelete={onDelete}
+                        userPushPostValue={
+                            postStateVal.postPushPulls.find(
+                            (item) => item.postId === post.id)?.pushPullValue}
                     />
                 ))}
             </Stack>
