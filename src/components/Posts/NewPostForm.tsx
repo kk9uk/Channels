@@ -59,7 +59,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
 
     const handleCreatePost = async() => {
         const { channelName } = router.query;
-        console.log(channelName);
+        // console.log(channelName);
         const newPost: Post = {
             channelName: channelName as string,
             creatorId: user?.uid,

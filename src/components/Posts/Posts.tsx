@@ -33,7 +33,7 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
             const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
             setPostStateVal((prev) => ({
                 ...prev,
-                postList: posts as Post[] | [],
+                postList: posts as Post[],
             }));
             console.log(postStateVal);
             console.log("posts", posts);
@@ -58,7 +58,7 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
             <Stack>
                 {postStateVal.postList.map((item) => (
                     <PostItem
-                        key={item.channelName}
+                        key={item.id}
                         post={item} 
                         isCreator={user?.uid === item.creatorId}
                         numPushPull={undefined}

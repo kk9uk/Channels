@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Post } from "../../state/postState";
-import { Flex, Icon, Image, Skeleton, Stack, Text } from "@chakra-ui/react";
+import { Alert, AlertIcon, CloseButton, Flex, Icon, Image, Skeleton, Spinner, Stack, Text } from "@chakra-ui/react";
 import { IoArrowDownCircleOutline, 
         IoArrowDownCircleSharp, 
         IoArrowRedoOutline, 
@@ -17,7 +17,7 @@ type PostItemProps = {
     numPushPull?: number;
     onSelect: () => void;
     onPushPull: () => {};
-    onDelete: () => {};
+    onDelete: (post: Post) => Promise<boolean>;
 };
 
 const PostItem: React.FC<PostItemProps> = ({
@@ -29,6 +29,26 @@ const PostItem: React.FC<PostItemProps> = ({
     onDelete,
 }) => {
     const [loadingImg, setLoadingImg] = useState(true);
+    const [loadingDelete, setLoadingDelete] = useState(false);
+    const [ error, setError] = useState(false);
+
+    const handleDelete = async () => {
+        setLoadingDelete(true);
+
+        try{
+            const successMsg = await onDelete(post);
+            if (!successMsg) {
+                throw new Error("Failure: Delete Post");
+            }
+
+            console.log("Delete success");
+
+        } catch(error: any) {
+            setError(error.message);
+        }
+
+        setLoadingDelete(false);
+    };
 
     return (
         <Flex
@@ -65,6 +85,13 @@ const PostItem: React.FC<PostItemProps> = ({
                 />
             </Flex>
             <Flex direction="column" width="100%">
+                {error && (
+                    <Alert status = "error">
+                        <AlertIcon/>
+                        <Text mr={2}>{error}</Text>
+                        <CloseButton position = "absolute" right = "8px" top = "8px"/>
+                    </Alert>
+                )}
                 <Stack spacing={1} p="10px">
                     <Stack
                         direction="row"
@@ -79,6 +106,10 @@ const PostItem: React.FC<PostItemProps> = ({
 
                     <Text fontSize={"12pt"} fontWeight={600}>
                         {post.title}
+                    </Text>
+
+                    <Text fontSize={"10pt"}>
+                        {post.body}
                     </Text>
 
                     {post.imageURL && (
@@ -142,10 +173,16 @@ const PostItem: React.FC<PostItemProps> = ({
                             borderRadius={4}
                             _hover={{ bg: "gray.200" }}
                             cursor="pointer"
-                            onClick={onDelete}
+                            onClick={handleDelete}
                         >
-                            <Icon as={AiOutlineDelete} mr={2}/>
-                            <Text fontSize="9pt">Delete</Text>
+                            {loadingDelete ? (
+                                <Spinner size="sm"/>
+                            ) : (
+                                <>
+                                    <Icon as={AiOutlineDelete} mr={2}/>
+                                    <Text fontSize="9pt">Delete</Text>
+                                </>
+                            )}
                         </Flex>
                     )}
                 </Flex>
