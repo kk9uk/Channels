@@ -6,11 +6,9 @@ import {auth, firestore} from "../../../firebase/clientApp";
 import usePosts from "../../../hooks/usePosts";
 import {useRouter} from "next/router";
 import {doc, getDoc} from "firebase/firestore";
-import {prevById} from "@zag-js/dom-query";
 import {Post} from "../../../state/postState";
-import {AiOutlineBorderOuter} from "react-icons/ai";
 import useChannelState from "../../../hooks/useChannelState";
-import ChannelDetails from "../../../components/Channel/ChannelDetails";
+
 
 const PostPage: React.FC = () => {
     const [user] = useAuthState(auth);

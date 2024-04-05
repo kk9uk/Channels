@@ -17,7 +17,7 @@ type PostItemProps = {
     isCreator: boolean;
     numPushPull?: number;
     onSelect?: (post: Post) => void;
-    onPushPull: (event: React.MouseEvent<SVGElement>, post: Post, pushPull: number, channelName: string) => void;
+    onPushPull: (event: React.MouseEvent<SVGElement, MouseEvent>, post: Post, pushPull: number, channelName: string) => void;
     onDelete: (post: Post) => Promise<boolean>;
     userPushPostValue?: number;
 };

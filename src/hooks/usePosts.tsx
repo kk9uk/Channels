@@ -107,15 +107,14 @@ const usePosts = () => {
           }
           batch.update(postPushPullRef, { pushPullValue: pushPull });
         }
-        if(postStateVal.selectedPost){
-          setPostStateVal((prev) =>({
-            ...prev,
-            selectedPost: updatedPost,
-          }));
-        }
       }
 
-
+      if(postStateVal.selectedPost){
+        setPostStateVal((prev) =>({
+          ...prev,
+          selectedPost: updatedPost,
+        }));
+      }
       // update the post document
       const postRef = doc(firestore, "posts", post.id!);
       batch.update(postRef, { numPushPull: numPushPull + pushPullChange });
