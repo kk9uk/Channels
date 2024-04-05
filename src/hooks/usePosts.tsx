@@ -26,10 +26,12 @@ const usePosts = () => {
   const setAuthPopupState = useSetRecoilState(authPopupState);
 
   const onPushPull = async (
+    event: React.MouseEvent<SVGAElement, MouseEvent>,
     post: Post,
     pushPull: number,
     channelName: string
   ) => {
+    event.stopPropagation();
     // check user credential => if not, open auth modal
     if (!user) {
       setAuthPopupState({ isOpened: true, view: "Login" });
@@ -105,7 +107,15 @@ const usePosts = () => {
           }
           batch.update(postPushPullRef, { pushPullValue: pushPull });
         }
+        if(postStateVal.selectedPost){
+          setPostStateVal((prev) =>({
+            ...prev,
+            selectedPost: updatedPost,
+          }));
+        }
       }
+
+
       // update the post document
       const postRef = doc(firestore, "posts", post.id!);
       batch.update(postRef, { numPushPull: numPushPull + pushPullChange });
@@ -126,7 +136,14 @@ const usePosts = () => {
     console.log("onPushPull called");
   };
 
-  const onSelect = () => {};
+  const onSelect = (post: Post) => {
+    setPostStateVal((prev) => ({
+      ...prev,
+      selectedPost: post,
+
+    }));
+  router.push(`/${post.channelName}/comments/${post.id}`);
+  };
 
   const onDelete = async (post: Post): Promise<boolean> => {
     try {

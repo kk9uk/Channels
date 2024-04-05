@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useRef, useState} from "react";
+import React, {FunctionComponent, useRef} from "react";
 import {
     Box,
     Button,
@@ -41,6 +41,7 @@ const UserImageEditPopupProp: FunctionComponent<EditImagePopupProp> = ({
             reader.readAsDataURL(file);
         }
     };
+
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile();
 
     return (
@@ -54,6 +55,7 @@ const UserImageEditPopupProp: FunctionComponent<EditImagePopupProp> = ({
                     padding={3}
                     ml={1}
                 >
+                    Edit your own profile image
                 </ModalHeader>
                 <ModalContent>
                     <ModalBody>

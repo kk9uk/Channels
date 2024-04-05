@@ -10,13 +10,14 @@ import { IoArrowDownCircleOutline,
 import moment from "moment";
 import { BsChat } from "react-icons/bs";
 import { AiOutlineDelete } from "react-icons/ai";
+import {useRouter} from "next/router";
 
 type PostItemProps = {
     post: Post;
     isCreator: boolean;
     numPushPull?: number;
-    onSelect: () => void;
-    onPushPull: (post: Post, pushPull: number, channelName: string) => void;
+    onSelect?: (post: Post) => void;
+    onPushPull: (event: React.MouseEvent<SVGElement>, post: Post, pushPull: number, channelName: string) => void;
     onDelete: (post: Post) => Promise<boolean>;
     userPushPostValue?: number;
 };
@@ -33,8 +34,10 @@ const PostItem: React.FC<PostItemProps> = ({
     const [loadingImg, setLoadingImg] = useState(true);
     const [loadingDelete, setLoadingDelete] = useState(false);
     const [error, setError] = useState(false);
-
-    const handleDelete = async () => {
+    const router = useRouter();
+    const singlePostPage = !onSelect
+    const handleDelete = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        event.stopPropagation();
         setLoadingDelete(true);
 
         try{
@@ -44,7 +47,8 @@ const PostItem: React.FC<PostItemProps> = ({
             }
 
             console.log("Delete success");
-
+            if (singlePostPage){}
+                router.push(`/${post.channelName}`);
         } catch(error: any) {
             setError(error.message);
         }
@@ -56,11 +60,11 @@ const PostItem: React.FC<PostItemProps> = ({
         <Flex
             border = "1px solid" 
             bg = "white"
-            borderColor="gray.300"
-            borderRadius={4}
-            _hover={{ borderColor: "gray.500"}}
-            cursor="pointer"
-            onClick={onSelect}
+            borderColor={singlePostPage ? 'white': "gray.300"}
+            borderRadius={singlePostPage? "4px 4px 0px 0px" : "4px"}
+            _hover={{borderColor: singlePostPage ? "none" : "gray.500" }}
+            cursor={singlePostPage ? "unset" : "pointer"}
+            onClick={() => onSelect&& onSelect(post)}
         >
             <Flex 
                 direction="column"
@@ -74,7 +78,7 @@ const PostItem: React.FC<PostItemProps> = ({
                     as={userPushPostValue === 1 ? IoArrowUpCircleSharp : IoArrowUpCircleOutline}
                     color={numPushPull === 1 ? "brand.100" : "gray.400"}
                     fontSize={22}
-                    onClick={() => onPushPull(post, 1, post.channelName)}
+                    onClick={(event) => onPushPull(event, post, 1, post.channelName)}
                     cursor="pointer"
                 />
                 <Text fontSize="9pt">{post.numPushPull}</Text>
@@ -82,7 +86,7 @@ const PostItem: React.FC<PostItemProps> = ({
                     as={userPushPostValue === -1 ? IoArrowDownCircleSharp : IoArrowDownCircleOutline}
                     color={numPushPull === -1 ? "#4379ff" : "gray.400"}
                     fontSize={22}
-                    onClick={() => onPushPull(post, -1, post.channelName)}
+                    onClick={(event) => onPushPull(event, post, -1, post.channelName)}
                     cursor="pointer"
                 />
             </Flex>

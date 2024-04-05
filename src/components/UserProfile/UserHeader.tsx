@@ -28,6 +28,7 @@ type TextInputsProps = {
 };
 
 
+
 const UserHeader: React.FC = () => {
     const [user, setUser] = useState<User | null>(null);
     const [introduction, setIntroduction] = useState<string>("");
@@ -173,13 +174,15 @@ const UserHeader: React.FC = () => {
                                         border: "1px solid",
                                         borderColor: "black",
                                     }}
+                                    width={"800px"}
                                     size='sm'
                                 />
                             )}
                             {!editMode && (
-                                <Flex>
+                                <Flex width={"800px"}>
                                     <Text>
                                         {introduction}
+
                                     </Text>
 
                                 </Flex>
