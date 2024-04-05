@@ -9,7 +9,8 @@ import {doc, getDoc} from "firebase/firestore";
 import {Post} from "../../../state/postState";
 import useChannelState from "../../../hooks/useChannelState";
 import ChannelDetails from "../../../components/Channel/ChannelDetails";
-
+import Comments from "../../../components/Posts/Comments/Comments";
+import {User} from "firebase/auth";
 
 const PostPage: React.FC = () => {
     const [user] = useAuthState(auth);
@@ -55,6 +56,11 @@ const PostPage: React.FC = () => {
 
                     />
                 )}
+                {/*comments */}
+                <Comments user={user as User}
+                          selectPost={postStateVal.selectedPost}
+                          channelName={postStateVal.selectedPost?.channelName as string}/>
+
 
             </>
             <>
