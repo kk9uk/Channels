@@ -6,10 +6,13 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../firebase/clientApp';
 import { useRecoilValue } from 'recoil';
 import { channelState } from '../../state/channelState';
+import useChannelState from "../../hooks/useChannelState";
+import ChannelDetails from "../../components/Channel/ChannelDetails";
 
 const SubmitPostPage: React.FC = () => {
     const [user] = useAuthState(auth);
-    const channelStateVal = useRecoilValue(channelState);
+    // const channelStateVal = useRecoilValue(channelState);
+    const {channelStateValue} = useChannelState();
     // console.log("channel:", channelStateVal);
 
     return (
@@ -20,7 +23,11 @@ const SubmitPostPage: React.FC = () => {
                 </Box>
                 {user && <NewPostForm user = {user} />}
             </>
-            <>{/* {About} */}</>
+            <>
+                {channelStateValue.currentChannel && (
+                    <ChannelDetails channel={channelStateValue.currentChannel}/>
+                )}
+            </>
         </ContentLayout>
     );
 };

@@ -3,8 +3,9 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { Channel, channelState, channel } from "../state/channelState";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, firestore } from "../firebase/clientApp";
-import { collection, doc, getDocs, increment, writeBatch } from "firebase/firestore";
+import {collection, doc, getDoc, getDocs, increment, writeBatch} from "firebase/firestore";
 import { authPopupState } from "../state/authPopupState";
+import { useRouter } from "next/router";
 
 const useChannelState = () => {
     const [channelStateValue, setChannelStateValue] = useRecoilState(channelState);
@@ -12,6 +13,7 @@ const useChannelState = () => {
     const [isServerError, setServerError] = useState("");
     const [user] = useAuthState(auth);
     const setAuthPopupState = useSetRecoilState(authPopupState);
+    const router = useRouter();
 
     const onJoinOrLeaveChannel = (channel: Channel, isJoined: boolean) => {
         if (!user) {
@@ -76,11 +78,35 @@ const useChannelState = () => {
         setIsLoading(false);
     };
 
+    const getChannelData = async (channelName: string) => {
+        try {
+            const channelDocRef = doc(firestore, 'channels', channelName);
+            const channelDoc = await getDoc(channelDocRef);
+
+            setChannelStateValue((prev) => ({
+                ...prev,
+                currentChannel: {
+                    channelName: channelDoc.id,
+                    ...channelDoc.data()
+                } as Channel,
+            }));
+        } catch (error) {
+            console.log("getChannelData", error);
+        }
+    };
+
     useEffect(() => {
         if (!user) return;
         getChannels();
     }, [user]);
 
+    useEffect(() => {
+        const {channelName} = router.query
+
+        if (channelName && ! channelStateValue.currentChannel){
+            getChannelData(channelName as string);
+        }
+    }, [router.query, channelStateValue.currentChannel]);
     return {
         channelStateValue,
         onJoinOrLeaveChannel,

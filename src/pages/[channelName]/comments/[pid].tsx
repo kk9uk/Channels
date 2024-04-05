@@ -8,6 +8,7 @@ import {useRouter} from "next/router";
 import {doc, getDoc} from "firebase/firestore";
 import {Post} from "../../../state/postState";
 import useChannelState from "../../../hooks/useChannelState";
+import ChannelDetails from "../../../components/Channel/ChannelDetails";
 
 
 const PostPage: React.FC = () => {
@@ -57,9 +58,9 @@ const PostPage: React.FC = () => {
 
             </>
             <>
-                {/*{channelStateValue.currentChannel && (*/}
-                {/*    <ChannelDetails channelData={channelStateValue.currentChannel}/>*/}
-                {/*)}*/}
+                {channelStateValue.currentChannel && (
+                    <ChannelDetails channel={channelStateValue.currentChannel}/>
+                )}
             </>
         </ContentLayout>
     );
