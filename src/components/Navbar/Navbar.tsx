@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
         <Flex bg="#1A83A8" height="44px" padding="6px 12px">
             <Flex align="center">
                 <Image src="/images/icon.png" height="30px" onClick = {() => {onSelectMenuItem(defaultMenuItem)}}/>
-                <Image src="/images/name.svg" height="18px" display={{ base: "none", md: "unset" }}/>
+                <Image src="/images/name.svg" height="18px" display={{ base: "none", md: "unset" }} onClick = {() => {onSelectMenuItem(defaultMenuItem)}}/>
             </Flex>
             {user && <Channelbar/>}
             <Searchbar user={user}/>
