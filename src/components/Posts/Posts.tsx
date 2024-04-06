@@ -47,7 +47,7 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
 
     useEffect(() => {
         getPosts();
-    }, []);
+    }, [channelData]);
 
 
     return(

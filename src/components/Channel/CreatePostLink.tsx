@@ -9,11 +9,13 @@ import { useSetRecoilState } from "recoil";
 import { authPopupState } from "../../state/authPopupState";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase/clientApp";
+import useChannelBar from "../../hooks/useChannelBar";
 
 const CreatePostLink: React.FC = () => {
   const router = useRouter();
   const setAuthPopupState = useSetRecoilState(authPopupState);
   const [user] = useAuthState(auth);
+  const {toggleMenuOpen} = useChannelBar();
 
   const onClick = () => {
     if (!user) {
@@ -26,6 +28,11 @@ const CreatePostLink: React.FC = () => {
       router.push(`/${router.query.channelName}/submit`);
       return;
     }
+
+    // open our channel bar menu
+    toggleMenuOpen();
+
+
   };
   return (
     <Flex

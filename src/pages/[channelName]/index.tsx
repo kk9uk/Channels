@@ -13,6 +13,7 @@ import Posts from "../../components/Posts/Posts";
 import { useSetRecoilState } from "recoil";
 import ChannelDetails from "../../components/Channel/ChannelDetails";
 
+
 type ChannelPageProp = {
     channel: Channel;
 }
@@ -24,13 +25,13 @@ const ChannelPage: React.FC<ChannelPageProp> = ({ channel }) => {
         return <ChannelNotFound/>;
     }
     // console.log(channel);
-
+    //Todo: ChannelPage red line at use effect
     useEffect(() => {
         setChannelStateVal((prev) => ({
             ...prev,
             currentChannel: channel,
         }));
-    }, []);
+    }, [channel]);
 
     return (
         <>
