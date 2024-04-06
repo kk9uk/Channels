@@ -78,7 +78,7 @@ const Comments: React.FC<CommentsProps> = ({
         ...prev,
         selectedPost: {
           ...prev.selectedPost!,
-          numberOfComments: prev.selectedPost!.numComments! + 1,
+          numberOfComments: prev.selectedPost?.numComments! + 1,
         },
       }));
     } catch (error) {
