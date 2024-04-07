@@ -1,10 +1,87 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import ContentLayout from "../components/Layout/ContentLayout";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, firestore } from "../firebase/clientApp";
+import { useCallback, useEffect, useState } from "react";
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import usePosts from "../hooks/usePosts";
+import { Post } from "../state/postState";
+import PostLoader from "../components/Posts/PostLoader";
+import { Stack } from "@chakra-ui/react";
+import PostItem from "../components/Posts/PostItem";
+import CreatePostLink from "../components/Channel/CreatePostLink";
+import useChannelBar from "../hooks/useChannelBar";
 
 const Home: NextPage = () => {
-    return <div>Hello world!</div>;
-}
+  const [user, loadingUser] = useAuthState(auth);
+  const [loading, setLoading] = useState(false);
+  const { postStateVal, setPostStateVal, onPushPull, onSelect, onDelete } = usePosts();
 
-export default Home
+  const buildUserFeed = () => {};
+
+  const buildNonUserFeed = useCallback(async () => {
+    setLoading(true);
+    try {
+      const postQuery = query(
+        collection(firestore, "posts"),
+        orderBy("numPushPull", "desc"),
+        limit(10)
+      );
+
+      const postDocs = await getDocs(postQuery);
+      const post = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setPostStateVal((prev) => ({
+        ...prev,
+        postList: post as Post[],
+      }));
+      console.log(postStateVal);
+    } catch (error) {
+      console.log("buildNoUserHomeFeed error: ", error);
+    }
+    setLoading(false);
+  }, [setPostStateVal]);
+
+const getUserPostsPushPull = () => {};
+
+useEffect(() => {
+    // always start with !user, only fetcg NonUserFeed when loadingUSer is false also
+    if (!user && !loadingUser) buildNonUserFeed();
+}, [user, loadingUser, buildNonUserFeed]);
+
+  return (
+    <ContentLayout>
+      <>
+        <CreatePostLink />
+        {loading ? (
+          <PostLoader />
+        ) : (
+          <Stack>
+            {postStateVal.postList.map((post: Post) => (
+              <PostItem
+                key={post.id}
+                post={post}
+                isCreator={post.creatorId === user?.uid}
+                numPushPull={post.numPushPull}
+                onPushPull={onPushPull}
+                onDelete={onDelete}
+                onSelect={onSelect}
+                userPushPostValue={
+                  postStateVal.postPushPulls.find(
+                    (item) => item.postId === post.id
+                  )?.pushPullValue
+                }
+                isHomePage={true}
+              />
+            ))}
+          </Stack>
+        )}
+      </>
+      <>{/* Recommendations */}</>
+    </ContentLayout>
+  );
+};
+
+export default Home;

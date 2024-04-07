@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Post } from "../../state/postState";
-import { Alert, AlertIcon, CloseButton, Flex, Icon, Image, Skeleton, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Alert, AlertIcon, CloseButton, Flex, Icon, Image, Link, Skeleton, Spinner, Stack, Text } from "@chakra-ui/react";
 import { IoArrowDownCircleOutline, 
         IoArrowDownCircleSharp, 
         IoArrowRedoOutline, 
@@ -11,6 +11,8 @@ import moment from "moment";
 import { BsChat } from "react-icons/bs";
 import { AiOutlineDelete } from "react-icons/ai";
 import {useRouter} from "next/router";
+import NextLink from 'next/link'
+
 
 type PostItemProps = {
     post: Post;
@@ -20,6 +22,7 @@ type PostItemProps = {
     onPushPull: (event: React.MouseEvent<SVGElement, MouseEvent>, post: Post, pushPull: number, channelName: string) => void;
     onDelete: (post: Post) => Promise<boolean>;
     userPushPostValue?: number;
+    isHomePage?: boolean;
 };
 
 const PostItem: React.FC<PostItemProps> = ({
@@ -30,6 +33,7 @@ const PostItem: React.FC<PostItemProps> = ({
     onSelect,
     onDelete,
     userPushPostValue,
+    isHomePage,
 }) => {
     const [loadingImg, setLoadingImg] = useState(true);
     const [loadingDelete, setLoadingDelete] = useState(false);
@@ -105,6 +109,10 @@ const PostItem: React.FC<PostItemProps> = ({
                         align="center"
                         fontSize="9pt"
                     >
+                        {/* {Home Page Check} */} 
+                        {isHomePage && (
+                            <Link as={NextLink} href={`./${post.channelName}`} fontWeight={600} mr={2}>c/{post.channelName}</Link>
+                        )}
                         <Text>
                             Posted by {post.creatorName} {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
                         </Text>
