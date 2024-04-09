@@ -161,7 +161,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({ channel }) => {
                                 <input
                                     id='file-upload'
                                     type='file'
-                                    accept='image/x-png,image/gif,image/jpeg'
+                                    accept='image/x-png,image/gif,image/jpeg,video/*'
                                     hidden
                                     ref={selectedFileRef}
                                     onChange={onSelectFile}
