@@ -16,7 +16,9 @@ import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import useSelectFile from '../../hooks/useSelectFile';
 
 type NewPostFormProps = {
-    user: User;
+    user: User
+    channelName: string
+    channelIconUrl?: string
 };
 
 const formTabs: TabItem[] = [
@@ -47,7 +49,7 @@ export type TabItem = {
     icon: typeof Icon.arguments;
 }
 
-const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
+const NewPostForm: React.FC<NewPostFormProps> = ({ user, channelName, chann }) => {
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
     const [textInput, setTextInput] = useState({

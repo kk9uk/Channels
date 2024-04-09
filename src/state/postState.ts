@@ -4,6 +4,7 @@ import { atom } from "recoil";
 export type Post = {
   id: string;
   channelName: string;
+  channelIconURL?: string;
   creatorId: string;
   creatorName: string;
   title: string;
