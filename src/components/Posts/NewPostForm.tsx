@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { BiPoll } from "react-icons/bi";
 import { BsLink45Deg, BsMic } from "react-icons/bs";
 import { IoDocumentText, IoImageOutline } from "react-icons/io5";
-import { AiFillCloseCircle } from "react-icons/ai";
 import TabItem from './TabItem';
 import TextInputs from './PostForm/TextInputs';
 import ImageUpload from './PostForm/ImageUpload';
@@ -49,7 +48,7 @@ export type TabItem = {
     icon: typeof Icon.arguments;
 }
 
-const NewPostForm: React.FC<NewPostFormProps> = ({ user, channelName, chann }) => {
+const NewPostForm: React.FC<NewPostFormProps> = ({ user, channelName, channelIconUrl }) => {
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
     const [textInput, setTextInput] = useState({
@@ -68,6 +67,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user, channelName, chann }) =
         // error of Post.id undefined, DO NOT touch this
         const newPost: Post = {
             channelName: channelName as string,
+            channelIconUrl: channelIconUrl || '',
             creatorId: user?.uid,
             creatorName: user.displayName as string,
             title: textInput.title,

@@ -47,7 +47,7 @@ const useChannelBar = () => {
                     link: `${currentChannel.channelName}`,
                     icon: FaQuestionCircle,
                     iconColor: "blue.500",
-                    imageURL: currentChannel.iconURL,
+                    imageURL: currentChannel.iconUrl,
                 },
             }));
             return;

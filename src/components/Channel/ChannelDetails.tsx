@@ -41,7 +41,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({ channel }) => {
                 ...prev,
                 currentChannel: {
                     ...prev.currentChannel,
-                    iconURL: downloadURL,
+                    iconUrl: downloadURL,
                 } as Channel,
             }));
         } catch (error) {
@@ -132,9 +132,9 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({ channel }) => {
                                     >
                                         Change Channel Icon
                                     </Text>
-                                    {channel.iconURL || selectedFile ? (
+                                    {channel.iconUrl || selectedFile ? (
                                         <Image 
-                                            src={selectedFile || channel.iconURL} 
+                                            src={selectedFile || channel.iconUrl} 
                                             borderRadius='full'
                                             boxSize='40px'
                                             alt='Channel Image'
@@ -161,7 +161,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({ channel }) => {
                                 <input
                                     id='file-upload'
                                     type='file'
-                                    accept='image/x-png,image/gif,image/jpeg'
+                                    accept='image/x-png,image/gif,image/jpeg,video/*'
                                     hidden
                                     ref={selectedFileRef}
                                     onChange={onSelectFile}

@@ -9,18 +9,19 @@ export interface Channel {
   creatorId: string;
   noOfMember: number;
   createdAt: Timestamp;
-  iconURL?: string;
+  iconUrl?: string;
 }
 
 export interface channel {
   channelName: string;
   isAdmin?: boolean;
-  iconURL?: string;
+  iconUrl?: string;
 }
 
 interface ChannelState {
   channels: channel[];
   currentChannel?: Channel;
+  channelFetched: boolean;
 }
 
 export const defaultChannel: Channel = {
@@ -28,12 +29,13 @@ export const defaultChannel: Channel = {
   creatorId: "",
   noOfMember: 0,
   createdAt: Timestamp.now(),
-  iconURL: "",
+  iconUrl: "",
 };
 
 export const defaultChannelState: ChannelState = {
   channels: [],
   currentChannel: defaultChannel,
+  channelFetched: false,
 };
 
 export const channelState = atom<ChannelState>({

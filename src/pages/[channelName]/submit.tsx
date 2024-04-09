@@ -11,9 +11,10 @@ import ChannelDetails from "../../components/Channel/ChannelDetails";
 
 const SubmitPostPage: React.FC = () => {
   const [user] = useAuthState(auth);
-  // const channelStateVal = useRecoilValue(channelState);
+  // const channelStateValue = useRecoilValue(channelState);
+  // console.log(channelStateValue);
   const { channelStateValue } = useChannelState();
-  // console.log("channel:", channelStateVal);
+  console.log(channelStateValue);
 
   return (
     <ContentLayout>
@@ -25,7 +26,7 @@ const SubmitPostPage: React.FC = () => {
           <NewPostForm
             user={user}
             channelName={channelStateValue.currentChannel.channelName}
-            channelIconUrl={channelStateValue.currentChannel.iconURL}
+            channelIconUrl={channelStateValue.currentChannel.iconUrl}
           />
         )}
       </>
