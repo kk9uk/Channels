@@ -10,6 +10,9 @@ import UserImageEditPopup from "./UserImageEditPopup";
 import {User, userState} from "../../state/userState";
 import {Channel} from "../../state/channelState";
 import UserNotFound from "./userNotfound";
+import {doc, getDoc, setDoc} from "firebase/firestore";
+import {firestore} from "../../firebase/clientApp";
+import {useRouter} from "next/router";
 
 
 type TextInputsProps = {
@@ -29,7 +32,6 @@ type UserHeaderProp = {
 
 
 const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
-    // const [user, setUser] = useState<User | null>(null);
     const [introduction, setIntroduction] = useState<string>("");
     const [backgroundImage, setBackgroundImage] = useState<string>(
         "https://www.utep.edu/extendeduniversity/utepconnect/blog/june-2019/how-an-online-degree-can-prepare-you-for-remote-positions.jpg"
@@ -41,6 +43,8 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     })
     const [isOpened, setIsOpened] = useState(false);
     const canEdit = useState(false);
+    const router= useRouter();
+
 
 
 
@@ -70,20 +74,6 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
         setIntroduction(event.target.value);
     };
 
-    // const saveIntroduction = () => {
-    //     unableEditMode();
-    //     console.log("bottom successfully!");
-    //     if (user) {
-    //         updateProfile(user, { displayName: user.name, photoURL: user.imageURL })
-    //             .then(() => {
-    //                 console.log("Introduction saved successfully!");
-    //             })
-    //             .catch((error) => {
-    //                 console.log("Error saving introduction:", error);
-    //             });
-    //     }
-    // };
-
     const enableEditMode = () => {
         setEditMode(true);
     };
@@ -92,10 +82,35 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
         setEditMode(false)
     }
 
+    const saveIntroduction = () => {
+        unableEditMode();
+
+        const userDocRef = doc(firestore, "users", user.id);
+        const userDoc = getDoc(userDocRef);
+        try {
+            setDoc(userDocRef, { introduction: introduction }, { merge: true });
+            console.log("Introduction updated successfully in Firebase");
+        } catch (error) {
+            console.error("Error updating introduction in Firebase:", error);
+        }
+
+
+    };
+
+
+
     const editImage = () => {
         //batch.set(doc(firestore, `users/${user?.uid}/image`, image.background), new_background);
 
     }
+
+    useEffect(() => {
+        if (!introduction && user.introduction){
+            setIntroduction(user.introduction)
+        }
+
+
+    }, [router.query]);
 
     if (!user.email){
         return <UserNotFound/>
@@ -202,7 +217,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
                                     Edit your image
                                 </Button>
                                 <Button marginRight="4" height="30px" fontSize="12pt" pr={6} pl={6}
-                                        // onClick={saveIntroduction}
+                                        onClick={saveIntroduction}
                                 >
                                     Save
                                 </Button>

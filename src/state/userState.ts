@@ -5,6 +5,7 @@ export type User = {
     displayName: string | null | undefined;
     email?: string;
     photoURL?: string;
+    introduction?: string;
 };
 
 interface UserState {
