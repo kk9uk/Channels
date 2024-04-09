@@ -98,7 +98,7 @@ const PostItem: React.FC<PostItemProps> = ({
       borderRadius={singlePostPage ? "4px 4px 0px 0px" : "4px"}
       _hover={{ borderColor: singlePostPage ? "none" : "gray.500" }}
       cursor={singlePostPage ? "unset" : "pointer"}
-      onClick={() => onSelect && onSelect(post)}
+      // onClick={() => onSelect && onSelect(post)}
     >
       <Flex
         direction="column"
@@ -211,8 +211,8 @@ const PostItem: React.FC<PostItemProps> = ({
             _hover={{ bg: "gray.200" }}
             cursor="pointer"
           >
-            <Icon as={BsChat} mr={2} />
-            <Text fontSize="9pt">{post.numComments}</Text>
+            <Icon as={BsChat} mr={2} onClick={() => onSelect && onSelect(post)}/>
+            <Text fontSize="9pt" onClick={() => onSelect && onSelect(post)}>{post.numComments}</Text>
           </Flex>
 
           {/* Tweet button */}
