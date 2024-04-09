@@ -14,7 +14,7 @@ import {User} from "firebase/auth";
 
 const PostPage: React.FC = () => {
     const [user] = useAuthState(auth);
-    const {postStateVal, setPostStateVal, onDelete, onPushPull} = usePosts();
+    const {postStateVal, setPostStateVal, onDelete, onPushPull, onTweet} = usePosts();
     const router = useRouter();
     const { channelStateValue} = useChannelState();
 
@@ -47,6 +47,7 @@ const PostPage: React.FC = () => {
                         isCreator={user?.uid === postStateVal.selectedPost?.creatorId}
                         onDelete={onDelete}
                         onPushPull={onPushPull}
+                        onTweet={onTweet}
                         numPushPull={
                             postStateVal.postPushPulls.find(
                                 (item) => item.postId === postStateVal.selectedPost?.id

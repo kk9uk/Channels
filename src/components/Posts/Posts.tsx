@@ -17,7 +17,7 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
     const [user] = useAuthState(auth);
     const [loading, setLoading] = useState(false);
     const { postStateVal, setPostStateVal,
-            onPushPull, onSelect, onDelete } = usePosts();
+            onPushPull, onSelect, onDelete, onTweet } = usePosts();
 
     const getPosts = async () => {
         try {
@@ -66,6 +66,7 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
                         onPushPull={onPushPull}
                         onSelect={onSelect}
                         onDelete={onDelete}
+                        onTweet={onTweet}
                         userPushPostValue={
                             postStateVal.postPushPulls.find(
                             (item) => item.postId === post.id)?.pushPullValue}

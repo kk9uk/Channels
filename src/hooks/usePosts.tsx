@@ -166,6 +166,15 @@ const usePosts = () => {
     }
   };
 
+  const onTweet = async (post: Post) => {
+    setPostStateVal((prev) => ({
+      ...prev,
+      selectedPost: post,
+      isTweet: true,
+    }));
+  };
+  // console.log("postStateVal", postStateVal);
+
   const getChannelPostPushPull = useCallback(
     async (channelName: string) => {
       const postPushPullsQuery = query(
@@ -207,6 +216,7 @@ const usePosts = () => {
     onPushPull,
     onSelect,
     onDelete,
+    onTweet,
   };
 };
 

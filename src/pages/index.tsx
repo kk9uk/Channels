@@ -28,7 +28,7 @@ import useChannelState from "../hooks/useChannelState";
 const Home: NextPage = () => {
   const [user, loadingUser] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
-  const { postStateVal, setPostStateVal, onPushPull, onSelect, onDelete } =
+  const { postStateVal, setPostStateVal, onPushPull, onSelect, onDelete, onTweet } =
     usePosts();
   const { channelStateValue } = useChannelState();
 
@@ -115,6 +115,7 @@ const Home: NextPage = () => {
                 onPushPull={onPushPull}
                 onDelete={onDelete}
                 onSelect={onSelect}
+                onTweet={onTweet}
                 userPushPostValue={
                   postStateVal.postPushPulls.find(
                     (item) => item.postId === post.id

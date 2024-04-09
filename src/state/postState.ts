@@ -24,12 +24,14 @@ export type PostPushPull = {
 };
 interface PostState {
   selectedPost: Post | null;
+  isTweet: boolean;
   postList: Post[];
   postPushPulls: PostPushPull[];
 }
 
 const defaultPostState: PostState = {
   selectedPost: null,
+  isTweet: false,
   postList: [],
   postPushPulls: [],
 };

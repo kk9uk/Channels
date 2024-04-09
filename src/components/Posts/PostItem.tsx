@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Post } from "../../state/postState";
+import { Post, postState } from "../../state/postState";
 import {
   Alert,
   AlertIcon,
@@ -35,6 +35,7 @@ import {
   where,
 } from "firebase/firestore";
 import { firestore } from "../../firebase/clientApp";
+import { useRecoilState } from "recoil";
 
 type PostItemProps = {
   post: Post;
@@ -48,6 +49,7 @@ type PostItemProps = {
     channelName: string
   ) => void;
   onDelete: (post: Post) => Promise<boolean>;
+  onTweet: (post: Post) => void;
   userPushPostValue?: number;
   isHomePage?: boolean;
 };
@@ -59,9 +61,11 @@ const PostItem: React.FC<PostItemProps> = ({
   onPushPull,
   onSelect,
   onDelete,
+  // onTweet,
   userPushPostValue,
   isHomePage,
 }) => {
+  const [postStateVal, setPostStateVal] = useRecoilState(postState);
   const [loadingImg, setLoadingImg] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [error, setError] = useState(false);
@@ -89,6 +93,19 @@ const PostItem: React.FC<PostItemProps> = ({
 
     setLoadingDelete(false);
   };
+  const handleTweet = async () => {
+    try {
+        // const setPostSuccess = onTweet;
+        setPostStateVal((prev) => ({
+            ...prev,
+            selectedPost: post,
+            isTweet: true,
+        }));
+        router.push(`/${post.channelName}/submit`);
+    } catch (error: any) {
+        setError(error.message);
+    }
+};
 
   return (
     <Flex
@@ -222,6 +239,7 @@ const PostItem: React.FC<PostItemProps> = ({
             borderRadius={4}
             _hover={{ bg: "gray.200" }}
             cursor="pointer"
+            onClick={handleTweet}
           >
             <Icon as={IoArrowRedoOutline} mr={2} />
             <Text fontSize="9pt">Tweet</Text>

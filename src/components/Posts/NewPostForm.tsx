@@ -3,16 +3,18 @@ import React, { useState } from 'react'
 import { BiPoll } from "react-icons/bi";
 import { BsLink45Deg, BsMic } from "react-icons/bs";
 import { IoDocumentText, IoImageOutline } from "react-icons/io5";
+import { AiFillCloseCircle } from "react-icons/ai";
 import TabItem from './TabItem';
 import TextInputs from './PostForm/TextInputs';
 import ImageUpload from './PostForm/ImageUpload';
 import { User } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import { Post } from '../../state/postState';
+import { Post, postState } from '../../state/postState';
 import { Timestamp, addDoc, collection, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { firestore, storage } from '../../firebase/clientApp';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import useSelectFile from '../../hooks/useSelectFile';
+import { useRecoilState } from 'recoil';
 
 type NewPostFormProps = {
     user: User
@@ -55,7 +57,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user, channelName, channelIco
         title: "",
         body: "",
     });
-
+    const [postStateVal, setPostStateVal] = useRecoilState(postState);
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -67,7 +69,6 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user, channelName, channelIco
         // error of Post.id undefined, DO NOT touch this
         const newPost: Post = {
             channelName: channelName as string,
-            channelIconUrl: channelIconUrl || '',
             creatorId: user?.uid,
             creatorName: user.displayName as string,
             title: textInput.title,
@@ -89,6 +90,10 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user, channelName, channelIco
                     imageURL: downloadURL,
                 });
             }
+            setPostStateVal((prev) => ({
+                ...prev,
+                isTweet: false,
+              }));
 
             router.back();
         } catch (error: any) {
