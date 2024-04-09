@@ -28,7 +28,7 @@ const UserPage: React.FC = () => {
             const userData = userDoc.data() as User;
             setUserStateValue((prev) => ({
                 ...prev,
-                selectedUser: { id: userDoc.id, ...userDoc.data() } as User,
+                selectedUser: { id: userDoc.id,photoURL: userDoc.id, ...userDoc.data() } as User,
             }));
 
 

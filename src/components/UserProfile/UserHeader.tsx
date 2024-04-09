@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {Box, Button, Flex, Icon, Input, Text, Textarea} from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
-import { Card, CardHeader, CardBody, CardFooter } from "@chakra-ui/react";
+import { Card } from "@chakra-ui/react";
 import { FaQuestionCircle } from "react-icons/fa";
-import CreateChannelPopup from "../Popup/CreateChannel/CreateChannelPopup";
 import UserImageEditPopup from "./UserImageEditPopup";
 import {User, userState} from "../../state/userState";
-import {Channel} from "../../state/channelState";
 import UserNotFound from "./userNotfound";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import {auth, firestore} from "../../firebase/clientApp";
 import {useRouter} from "next/router";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {getAuth} from "firebase/auth";
-import {AuthPopupState, authPopupState} from "../../state/authPopupState";
 
 type UserHeaderProp = {
     user: User;
@@ -66,7 +63,6 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
 
     };
 
-
     const editImage = () => {
         //batch.set(doc(firestore, `users/${user?.uid}/image`, image.background), new_background);
 
@@ -78,6 +74,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     }
 
     useEffect(() => {
+        console.log("useEffect is running")
         if (!introduction && user.introduction){
             setIntroduction(user.introduction)
         }
@@ -86,7 +83,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     }, [router.query]);
 
     useEffect(() => {
-
+        console.log("useEffect is running")
         setEditMode(false);
         if(!canEdit){
             if (currentUser == user.id){
@@ -108,7 +105,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     return (
         //
         <>
-            <UserImageEditPopup isOpened={isOpened} onClose={() => setIsOpened(false)}/>
+            <UserImageEditPopup isOpened={isOpened} onClose={() => setIsOpened(false)} user={user}/>
             {/*<Center color="white" w="100%" position="absolute">*/}
                 <Card alignContent="center" justifyContent="center" maxW="sm" top="10" width="100%">
                     <Box
