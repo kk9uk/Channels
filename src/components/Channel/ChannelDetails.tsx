@@ -41,7 +41,7 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({ channel }) => {
                 ...prev,
                 currentChannel: {
                     ...prev.currentChannel,
-                    iconURL: downloadURL,
+                    iconUrl: downloadURL,
                 } as Channel,
             }));
         } catch (error) {
@@ -132,9 +132,9 @@ const ChannelDetails: React.FC<ChannelDetailsProps> = ({ channel }) => {
                                     >
                                         Change Channel Icon
                                     </Text>
-                                    {channel.iconURL || selectedFile ? (
+                                    {channel.iconUrl || selectedFile ? (
                                         <Image 
-                                            src={selectedFile || channel.iconURL} 
+                                            src={selectedFile || channel.iconUrl} 
                                             borderRadius='full'
                                             boxSize='40px'
                                             alt='Channel Image'

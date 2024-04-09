@@ -51,7 +51,7 @@ const CreateChannelPopup: FunctionComponent<CreateChannelPopupProp> = ({ isOpene
                                 {
                                     channelName: channelName,
                                     isAdmin: true,
-                                    iconURL: ""
+                                    iconUrl: ""
                                 }
                 );
             });

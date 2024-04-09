@@ -31,7 +31,7 @@ const DropdownMenu: FunctionComponent = () => {
                         link={`/${channel.channelName}`}
                         icon={FaQuestionCircle}
                         iconColor="brand.100"
-                        imageURL={channel.iconURL}
+                        imageURL={channel.iconUrl}
                     />
                 ))}
             <Box pl={2} mb={1}>
@@ -46,7 +46,7 @@ const DropdownMenu: FunctionComponent = () => {
                     displayText={channel.channelName}
                     link={`/${channel.channelName}`}
                     iconColor='blue.500'
-                    imageURL={channel.iconURL}
+                    imageURL={channel.iconUrl}
                 />
             ))}
             <MenuItem
