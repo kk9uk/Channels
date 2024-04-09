@@ -1,36 +1,23 @@
 import React, { useEffect, useState } from "react";
-import firebase from "firebase/compat";
-import {
-    getAuth,
-    onAuthStateChanged,
-    User,
-    updateProfile,
-} from "firebase/auth";
 import {Box, Button, Flex, Icon, Input, Text, Textarea} from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
-import { Card, CardHeader, CardBody, CardFooter } from "@chakra-ui/react";
+import { Card } from "@chakra-ui/react";
 import { FaQuestionCircle } from "react-icons/fa";
-import { Center, Square, Circle } from "@chakra-ui/react";
-import { Container } from "@chakra-ui/react";
-import CreateChannelPopup from "../Popup/CreateChannel/CreateChannelPopup";
 import UserImageEditPopup from "./UserImageEditPopup";
+import {User, userState} from "../../state/userState";
+import UserNotFound from "./userNotfound";
+import {doc, getDoc, setDoc} from "firebase/firestore";
+import {auth, firestore} from "../../firebase/clientApp";
+import {useRouter} from "next/router";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {getAuth} from "firebase/auth";
+
+type UserHeaderProp = {
+    user: User;
+}
 
 
-type TextInputsProps = {
-    textInputs: {
-        title: string;
-        body: string;
-    };
-    onChange: (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => void;
-    loading: boolean;
-};
-
-
-
-const UserHeader: React.FC = () => {
-    const [user, setUser] = useState<User | null>(null);
+const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     const [introduction, setIntroduction] = useState<string>("");
     const [backgroundImage, setBackgroundImage] = useState<string>(
         "https://www.utep.edu/extendeduniversity/utepconnect/blog/june-2019/how-an-online-degree-can-prepare-you-for-remote-positions.jpg"
@@ -41,26 +28,12 @@ const UserHeader: React.FC = () => {
         body: "",
     })
     const [isOpened, setIsOpened] = useState(false);
+    const [canEdit, setCanEdit] = useState(false);
+    const router= useRouter();
+    const [isFollowed, setIsFollowed] = useState(false);
+    const currentUser = getAuth().currentUser?.uid;
+    const [userAuthState] = useAuthState(auth);
 
-    // const onTextChange = ({
-    //                           target: { name, value },
-    //                       }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    //     setTextInput((prev) => ({
-    //         ...prev,
-    //         [name]: value,
-    //     }));
-    // };
-
-    useEffect(() => {
-        const auth = getAuth();
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-        });
-
-        return () => {
-            unsubscribe();
-        };
-    }, []);
 
     const handleIntroductionChange = (
         event: React.ChangeEvent<HTMLTextAreaElement>
@@ -68,39 +41,73 @@ const UserHeader: React.FC = () => {
         setIntroduction(event.target.value);
     };
 
-    const saveIntroduction = () => {
-        unableEditMode();
-        console.log("bottom successfully!");
-        if (user) {
-            updateProfile(user, { displayName: user.displayName, photoURL: user.photoURL })
-                .then(() => {
-                    console.log("Introduction saved successfully!");
-                })
-                .catch((error) => {
-                    console.log("Error saving introduction:", error);
-                });
-        }
-    };
-
     const enableEditMode = () => {
         setEditMode(true);
     };
 
     const unableEditMode = () => {
-        setEditMode(
-            false)
+        setEditMode(false)
     }
 
-    const editImage = () => {
+    const saveIntroduction = () => {
+        unableEditMode();
 
+        const userDocRef = doc(firestore, "users", user.id);
+        try {
+            setDoc(userDocRef, { introduction: introduction }, { merge: true });
+            console.log("Introduction updated successfully in Firebase");
+        } catch (error) {
+            console.error("Error updating introduction in Firebase:", error);
+        }
+
+
+    };
+
+    const editImage = () => {
+        //batch.set(doc(firestore, `users/${user?.uid}/image`, image.background), new_background);
+
+    }
+
+
+    function onFollowOrUnfollowUser(user: User, isFollowed: boolean) {
+        //TODO: follow function
+    }
+
+    useEffect(() => {
+        console.log("useEffect is running")
+        if (!introduction && user.introduction){
+            setIntroduction(user.introduction)
+        }
+
+
+    }, [router.query]);
+
+    useEffect(() => {
+        console.log("useEffect is running")
+        setEditMode(false);
+        if(!canEdit){
+            if (currentUser == user.id){
+                setCanEdit(true);
+            }
+        }
+        if(canEdit){
+            if (currentUser != user.id){
+                setCanEdit(false);
+            }
+        }
+
+    }, [router.query, userAuthState]);
+
+    if (!user.email){
+        return <UserNotFound/>
     }
 
     return (
         //
         <>
-            <UserImageEditPopup isOpened={isOpened} onClose={() => setIsOpened(false)}/>
-            <Center color="white" w="100%" position="absolute">
-                <Card alignContent="center" justifyContent="center" maxW="sm" top="10" width="100%" maxWidth="90%">
+            <UserImageEditPopup isOpened={isOpened} onClose={() => setIsOpened(false)} user={user}/>
+            {/*<Center color="white" w="100%" position="absolute">*/}
+                <Card alignContent="center" justifyContent="center" maxW="sm" top="10" width="100%">
                     <Box
                         position="relative"
                         h={40}
@@ -137,6 +144,19 @@ const UserHeader: React.FC = () => {
                                 borderRadius="full"
                             />
                         )}
+                        <Button
+                            variant={isFollowed ? "outline" : "solid"}
+                            height="30px"
+                            fontSize="12pt"
+                            pr={6}
+                            pl={6}
+                            top={6}
+                            // isLoading={isLoading}
+                            onClick={() => onFollowOrUnfollowUser(user, isFollowed)}
+                        >
+                            {isFollowed ? "Joined" : "Join"}
+                        </Button>
+
                     </Flex>
 
                     <Flex padding="0px 20px" alignContent="flex-start" justifyContent="space-between">
@@ -174,7 +194,6 @@ const UserHeader: React.FC = () => {
                                         border: "1px solid",
                                         borderColor: "black",
                                     }}
-                                    width={"800px"}
                                     size='sm'
                                 />
                             )}
@@ -182,7 +201,6 @@ const UserHeader: React.FC = () => {
                                 <Flex width={"800px"}>
                                     <Text>
                                         {introduction}
-
                                     </Text>
 
                                 </Flex>
@@ -192,22 +210,41 @@ const UserHeader: React.FC = () => {
                     <Flex padding="10px 16px" alignContent="flex-start" justifyContent="left">
                         {editMode && (
                             <>
-                                <Button marginRight="4" height="30px" fontSize="12pt" pr={6} pl={6} onClick={() => setIsOpened(true)}>
-                                    Edit your image
-                                </Button>
-                                <Button marginRight="4" height="30px" fontSize="12pt" pr={6} pl={6} onClick={saveIntroduction}>
-                                    Save
-                                </Button>
+                                <Flex flexDirection="column">
+                                    <Button
+                                        marginRight="4"
+                                        height="30px"
+                                        fontSize="12pt"
+                                        pr={6}
+                                        pl={6}
+                                        onClick={saveIntroduction}
+                                    >
+                                        Save
+                                    </Button>
+                                </Flex>
+                                <Flex flexDirection="column">
+                                    <Button
+                                        marginRight="4"
+                                        height="30px"
+                                        fontSize="12pt"
+                                        pr={6}
+                                        pl={6}
+                                        onClick={() => setIsOpened(true)}
+                                    >
+                                        Edit your image
+                                    </Button>
+                                </Flex>
                             </>
+
                         )}
-                        {!editMode && (
+                        {canEdit && !editMode && (
                             <Button height="30px" fontSize="12pt" pr={6} pl={6} onClick={enableEditMode}>
                                 Edit your Profile
                             </Button>
                         )}
                     </Flex>
                 </Card>
-            </Center>
+            {/*</Center>*/}
         </>
 
     );

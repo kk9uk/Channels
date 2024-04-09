@@ -186,21 +186,21 @@ const PostItem: React.FC<PostItemProps> = ({
 
           <Text fontSize={"10pt"}>{post.body}</Text>
 
-          {post.imageURL && (
-            <Flex justify="center" align="center" p={2}>
-              {loadingImg && (
-                <Skeleton height="200px" width="100%" borderRadius={4} />
-              )}
-              <Image
-                src={post.imageURL}
-                maxHeight="460px"
-                alt="Post Image"
-                display={loadingImg ? "none" : "unset"}
-                onLoad={() => setLoadingImg(false)}
-              />
-            </Flex>
-          )}
-        </Stack>
+                    {post.imageURL && (
+                        <Flex justify="center" align="center" p={2}>
+                            {loadingImg && (
+                                <Skeleton height="200px" width="100%" borderRadius={4}/>
+                            )}
+                            <Image 
+                                src={post.imageURL} 
+                                maxHeight="460px" 
+                                alt="Post Image" 
+                                display={loadingImg ? "none" : "unset"}
+                                onLoad={() => setLoadingImg(false)}/>
+                        </Flex>
+                    )}
+
+                </Stack>
 
         <Flex ml={1} mb={0.5} color="gray.500" fontWeight={600}>
           {/* number of comments */}
