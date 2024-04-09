@@ -1,11 +1,4 @@
 import React, { useEffect, useState } from "react";
-import firebase from "firebase/compat";
-import {
-    getAuth,
-    onAuthStateChanged,
-    User,
-    updateProfile,
-} from "firebase/auth";
 import {Box, Button, Flex, Icon, Input, Text, Textarea} from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 import { Card, CardHeader, CardBody, CardFooter } from "@chakra-ui/react";
@@ -14,6 +7,9 @@ import { Center, Square, Circle } from "@chakra-ui/react";
 import { Container } from "@chakra-ui/react";
 import CreateChannelPopup from "../Popup/CreateChannel/CreateChannelPopup";
 import UserImageEditPopup from "./UserImageEditPopup";
+import {User, userState} from "../../state/userState";
+import {Channel} from "../../state/channelState";
+import UserNotFound from "./userNotfound";
 
 
 type TextInputsProps = {
@@ -27,10 +23,13 @@ type TextInputsProps = {
     loading: boolean;
 };
 
+type UserHeaderProp = {
+    user: User;
+}
 
 
-const UserHeader: React.FC = () => {
-    const [user, setUser] = useState<User | null>(null);
+const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
+    // const [user, setUser] = useState<User | null>(null);
     const [introduction, setIntroduction] = useState<string>("");
     const [backgroundImage, setBackgroundImage] = useState<string>(
         "https://www.utep.edu/extendeduniversity/utepconnect/blog/june-2019/how-an-online-degree-can-prepare-you-for-remote-positions.jpg"
@@ -41,6 +40,9 @@ const UserHeader: React.FC = () => {
         body: "",
     })
     const [isOpened, setIsOpened] = useState(false);
+    const canEdit = useState(false);
+
+
 
     // const onTextChange = ({
     //                           target: { name, value },
@@ -51,16 +53,16 @@ const UserHeader: React.FC = () => {
     //     }));
     // };
 
-    useEffect(() => {
-        const auth = getAuth();
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-        });
-
-        return () => {
-            unsubscribe();
-        };
-    }, []);
+    // useEffect(() => {
+    //     const auth = getAuth();
+    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
+    //         setUser(user);
+    //     });
+    //
+    //     return () => {
+    //         unsubscribe();
+    //     };
+    // }, []);
 
     const handleIntroductionChange = (
         event: React.ChangeEvent<HTMLTextAreaElement>
@@ -68,39 +70,43 @@ const UserHeader: React.FC = () => {
         setIntroduction(event.target.value);
     };
 
-    const saveIntroduction = () => {
-        unableEditMode();
-        console.log("bottom successfully!");
-        if (user) {
-            updateProfile(user, { displayName: user.displayName, photoURL: user.photoURL })
-                .then(() => {
-                    console.log("Introduction saved successfully!");
-                })
-                .catch((error) => {
-                    console.log("Error saving introduction:", error);
-                });
-        }
-    };
+    // const saveIntroduction = () => {
+    //     unableEditMode();
+    //     console.log("bottom successfully!");
+    //     if (user) {
+    //         updateProfile(user, { displayName: user.name, photoURL: user.imageURL })
+    //             .then(() => {
+    //                 console.log("Introduction saved successfully!");
+    //             })
+    //             .catch((error) => {
+    //                 console.log("Error saving introduction:", error);
+    //             });
+    //     }
+    // };
 
     const enableEditMode = () => {
         setEditMode(true);
     };
 
     const unableEditMode = () => {
-        setEditMode(
-            false)
+        setEditMode(false)
     }
 
     const editImage = () => {
+        //batch.set(doc(firestore, `users/${user?.uid}/image`, image.background), new_background);
 
+    }
+
+    if (!user.email){
+        return <UserNotFound/>
     }
 
     return (
         //
         <>
             <UserImageEditPopup isOpened={isOpened} onClose={() => setIsOpened(false)}/>
-            <Center color="white" w="100%" position="absolute">
-                <Card alignContent="center" justifyContent="center" maxW="sm" top="10" width="100%" maxWidth="90%">
+            {/*<Center color="white" w="100%" position="absolute">*/}
+                <Card alignContent="center" justifyContent="center" maxW="sm" top="10" width="100%">
                     <Box
                         position="relative"
                         h={40}
@@ -174,7 +180,7 @@ const UserHeader: React.FC = () => {
                                         border: "1px solid",
                                         borderColor: "black",
                                     }}
-                                    width={"800px"}
+                                    // width={"800px"}
                                     size='sm'
                                 />
                             )}
@@ -195,7 +201,9 @@ const UserHeader: React.FC = () => {
                                 <Button marginRight="4" height="30px" fontSize="12pt" pr={6} pl={6} onClick={() => setIsOpened(true)}>
                                     Edit your image
                                 </Button>
-                                <Button marginRight="4" height="30px" fontSize="12pt" pr={6} pl={6} onClick={saveIntroduction}>
+                                <Button marginRight="4" height="30px" fontSize="12pt" pr={6} pl={6}
+                                        // onClick={saveIntroduction}
+                                >
                                     Save
                                 </Button>
                             </>
@@ -207,7 +215,7 @@ const UserHeader: React.FC = () => {
                         )}
                     </Flex>
                 </Card>
-            </Center>
+            {/*</Center>*/}
         </>
 
     );
