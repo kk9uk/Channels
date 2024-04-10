@@ -229,7 +229,7 @@ const PostItem: React.FC<PostItemProps> = ({
             cursor="pointer"
           >
             <Icon as={BsChat} mr={2} onClick={() => onSelect && onSelect(post)}/>
-            <Text fontSize="9pt" onClick={() => onSelect && onSelect(post)}>{post.numComments}</Text>
+            <Text fontSize="9pt" onClick={() => onSelect && onSelect(post)}>Comment</Text>
           </Flex>
 
           {/* Tweet button */}
