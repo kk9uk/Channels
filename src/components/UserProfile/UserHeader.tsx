@@ -86,12 +86,12 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
         console.log("useEffect is running")
         setEditMode(false);
         if(!canEdit){
-            if (currentUser == user.id){
+            if (currentUser == user.uid){
                 setCanEdit(true);
             }
         }
         if(canEdit){
-            if (currentUser != user.id){
+            if (currentUser != user.uid){
                 setCanEdit(false);
             }
         }

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
     Menu,
@@ -37,6 +37,7 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
     const profile =  () => {
         router.push(`/users/profile/${current_user}`);
     }
+
 
 
     return (
