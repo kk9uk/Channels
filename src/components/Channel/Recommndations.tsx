@@ -73,10 +73,9 @@ const Recommendations: React.FC<RecommendationsProps> = () => {
                 fontWeight={600}
                 // bgImage="url(/images/icon.png)"
                 backgroundSize="cover"
-                bgGradient="linear-gradient(to bottom, rgba(0.7, 0.3, 0, 0), rgba(0, 0, 0.05, 0.23)),
-        url('images/recCommsArt.png')"
+                bgGradient="linear-gradient(to bottom, rgba(0.7, 0.3, 0, 0), rgba(0, 0, 0.05, 0.23))"
             >
-                Top Communities
+                Top Channels
             </Flex>
             <Flex direction="column">
                 {loading ? (
