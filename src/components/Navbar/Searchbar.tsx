@@ -29,6 +29,8 @@ type Channel = {
 type User_ = {
     name: string;
     iconUrl?: string;
+    uid?: string;
+    displayName?:string
 };
 
 type SearchbarProps = {
@@ -47,6 +49,7 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const router = useRouter()
+
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -91,15 +94,32 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
 
 
     useEffect(() => {
-        const filtered = users.filter((user) =>
-            user.email.toLowerCase().includes(targetUser.toLowerCase())
-        );
+        const filtered = users.filter((user) => {
+            let displayNameMatch = null
+            if(user.displayName){
+                displayNameMatch = user.displayName.toLowerCase().includes(targetUser.toLowerCase());
+            }
+            const emailMatch = user.email.toLowerCase().includes(targetUser.toLowerCase());
+            // const displayNameMatch = user?.displayName.toLowerCase().includes(targetUser.toLowerCase());
+
+            if (displayNameMatch) {
+                console.log("Display Name:", user.displayName);
+            }
+            if (emailMatch){
+                console.log("Email:", user.email);
+            }
+
+            // return displayNameMatch;
+            return emailMatch || displayNameMatch;
+        });
+
         setFilteredUsers(filtered);
     }, [targetChannel, users]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
         setTargetChannel(inputValue);
+        setTargetUser(inputValue);
     };
 
     return (
@@ -132,11 +152,11 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
                     />
                 </InputGroup>
             </Flex>
-            {filteredChannels.length > 0 && (
-                <MenuList mt={-2.5} ml={85}  overflowY="auto">
-                    <Text fontSize='18px' ml={3}>
+            {filteredChannels.length >= 0 && (
+                <MenuList width='100%' overflowY="auto">
+                    {filteredChannels.length >0 && <Text fontSize='18px' ml={3}>
                         Channel
-                    </Text>
+                    </Text>}
                     {filteredChannels.map((channel) => (
                         <MenuGroup  key={channel.id}>
                             <MenuItem
