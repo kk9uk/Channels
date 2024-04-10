@@ -1,18 +1,18 @@
 import { atom } from "recoil";
 
-export type UserFollower = {
+export interface UserFollower {
     followerId: string;
 }
 
 interface UserFollowerState {
-    selectedUserFollower: UserFollower | null;
-    followerList: UserFollower[];
+    follow: UserFollower[];
 }
+
+export const defaultUserFollowerState: UserFollowerState = {
+    follow: [],
+};
 
 export const userFollowerState = atom<UserFollowerState>({
     key: "userFollowerState",
-    default: {
-        selectedUserFollower: null,
-        followerList: [],
-    },
+    default: defaultUserFollowerState,
 });

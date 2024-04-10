@@ -6,37 +6,39 @@ import { useSetRecoilState } from "recoil";
 import { authPopupState } from "../state/authPopupState";
 import { doc, writeBatch } from "firebase/firestore";
 import { useRouter } from "next/router";
+import { User } from "../state/userState";
 
 const useFollower = () => {
     const [user] = useAuthState(auth);
     const [isLoading, setIsLoading] = useState(false);
     const setAuthPopupState = useSetRecoilState(authPopupState);
 
-    const router = useRouter();
-    const onFollowOrUnfollow = (userFollow: UserFollower, isFollow: boolean) => {
+    const onFollowOrUnfollow = (selfuser: User, isFollow: boolean) => {
         if (!user) {
             setAuthPopupState({isOpened: true, view: "Login"});
             return;
         }
 
+        console.log(isFollow);
         setIsLoading(true);
         if (isFollow) {
-            Unfollow();
+            Unfollow(selfuser);
             return;
         }
-        Follow();
+        Follow(selfuser);
+        console.log(selfuser);
     };
 
-    const Follow = async () => {
+    const Follow = async (target: User) => {
         try {
             const batch = writeBatch(firestore);
             const newFollower: UserFollower = {
-                followerId: router.query as unknown as string,
+                followerId: target.uid,
             };
             batch.set(
                 doc(firestore, 
                     `users/${user?.uid}/user_follow`,
-                    router.query as unknown as string),
+                    target.uid),
                 newFollower
             );
 
@@ -48,13 +50,13 @@ const useFollower = () => {
         setIsLoading(false);
     };
 
-    const Unfollow = async () => {
+    const Unfollow = async (target: User) => {
         try {
             const batch = writeBatch(firestore);
             batch.delete(
                 doc(firestore, 
                     `users/${user?.uid}/user_follow`, 
-                    router.query as unknown as string));
+                    target.uid));
             await batch.commit();
         } catch (error: any) {
             console.log("userFollow: ", error);

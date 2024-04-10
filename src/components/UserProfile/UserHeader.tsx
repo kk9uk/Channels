@@ -11,6 +11,9 @@ import {auth, firestore} from "../../firebase/clientApp";
 import {useRouter} from "next/router";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {getAuth} from "firebase/auth";
+import { useRecoilValue } from "recoil";
+import { userFollowerState } from "../../state/userFollowerState";
+import useFollower from "../../hooks/useFollower";
 
 type UserHeaderProp = {
     user: User;
@@ -29,11 +32,13 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     })
     const [isOpened, setIsOpened] = useState(false);
     const [canEdit, setCanEdit] = useState(false);
-    const router= useRouter();
-    const [isFollowed, setIsFollowed] = useState(false);
-    const currentUser = getAuth().currentUser?.uid;
     const [userAuthState] = useAuthState(auth);
-
+    const router= useRouter();
+    // const myFollow = useRecoilValue(userFollowerState).follow;
+    const checkFollow = useRecoilValue(userFollowerState);
+    const isFollowed = !!checkFollow.follow.find(item => item.followerId === user.uid);
+    const currentUser = getAuth().currentUser?.uid;
+    console.log(checkFollow);
 
     const handleIntroductionChange = (
         event: React.ChangeEvent<HTMLTextAreaElement>
@@ -68,7 +73,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
 
     }
 
-
+    const { onFollowOrUnfollow, isLoading} = useFollower();
     function onFollowOrUnfollowUser(user: User, isFollowed: boolean) {
         //TODO: follow function
     }
@@ -152,9 +157,9 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
                             pl={6}
                             top={6}
                             // isLoading={isLoading}
-                            onClick={() => onFollowOrUnfollowUser(user, isFollowed)}
+                            onClick={() => onFollowOrUnfollow(user, isFollowed)}
                         >
-                            {isFollowed ? "Joined" : "Join"}
+                            {isFollowed ? "Unfollow" : "Follow"}
                         </Button>
 
                     </Flex>
