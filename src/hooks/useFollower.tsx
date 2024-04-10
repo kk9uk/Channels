@@ -5,7 +5,6 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
 import { authPopupState } from "../state/authPopupState";
 import { doc, writeBatch } from "firebase/firestore";
-import { User } from "../state/userState";
 import { useRouter } from "next/router";
 
 const useFollower = () => {
