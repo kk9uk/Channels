@@ -10,6 +10,7 @@ import {
   collection,
   getDocs,
   limit,
+  or,
   orderBy,
   query,
   where,
@@ -24,6 +25,7 @@ import useChannelBar from "../hooks/useChannelBar";
 import { channelState } from "../state/channelState";
 import { useRecoilValue } from "recoil";
 import useChannelState from "../hooks/useChannelState";
+import { userFollowerState } from "../state/userFollowerState";
 
 const Home: NextPage = () => {
   const [user, loadingUser] = useAuthState(auth);
@@ -65,10 +67,18 @@ const Home: NextPage = () => {
         let userSubscribedChannels = channelStateValue.channels.map(
           (channel) => channel.channelName
         );
+        const checkFollow = useRecoilValue(userFollowerState);
+        let userFollowed = checkFollow.follow.map(
+          (item) => item.followerId
+        );
         // find posts where channelName is in userSubscribedChannels (channels subscribed by user)
         const postQuery = query(
           collection(firestore, "posts"),
-          where("channelName", "in", userSubscribedChannels),
+          or (
+            where("creatorId", "in", userFollowed),
+            where("channelName", "in", userSubscribedChannels)
+          ),
+          orderBy("createAt", "desc"),
           limit(10)
         );
 

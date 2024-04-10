@@ -208,12 +208,19 @@ const PostItem: React.FC<PostItemProps> = ({
                             {loadingImg && (
                                 <Skeleton height="200px" width="100%" borderRadius={4}/>
                             )}
-                            <Image 
+                            <iframe
+                                src={post.imageURL}
+                                height="260px"
+                                width="100%"
+                                allowFullScreen={true}
+                                onLoad={() => setLoadingImg(false)}/>
+
+                            {/* <Image 
                                 src={post.imageURL} 
                                 maxHeight="460px" 
                                 alt="Post Image" 
                                 display={loadingImg ? "none" : "unset"}
-                                onLoad={() => setLoadingImg(false)}/>
+                                onLoad={() => setLoadingImg(false)}/> */}
                         </Flex>
                     )}
 
@@ -229,7 +236,7 @@ const PostItem: React.FC<PostItemProps> = ({
             cursor="pointer"
           >
             <Icon as={BsChat} mr={2} onClick={() => onSelect && onSelect(post)}/>
-            <Text fontSize="9pt" onClick={() => onSelect && onSelect(post)}>{post.numComments}</Text>
+            <Text fontSize="9pt" onClick={() => onSelect && onSelect(post)}>Comment</Text>
           </Flex>
 
           {/* Tweet button */}
