@@ -12,6 +12,8 @@ import { Stack, Text } from "@chakra-ui/react";
 import usePosts from "../../../hooks/usePosts";
 import PostItem from "../../../components/Posts/PostItem";
 import PostLoader from "../../../components/Posts/PostLoader";
+import { getAuth } from "firebase/auth";
+import { Post } from "../../../state/postState";
 
 const UserPage: React.FC = () => {
     const router = useRouter();
