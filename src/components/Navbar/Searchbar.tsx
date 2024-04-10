@@ -10,7 +10,7 @@ import {
     MenuItem,
     MenuButton,
     Image,
-    Text,
+    Text, Icon,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { User } from "firebase/auth";
@@ -19,71 +19,68 @@ import { firestore } from "../../firebase/clientApp";
 import { useDisclosure } from "@chakra-ui/react";
 import { useBreakpointValue } from "@chakra-ui/react";
 import { MenuGroup } from "@chakra-ui/react";
+import { FaQuestionCircle } from 'react-icons/fa';
 
 type Channel = {
     id: string;
+    iconUrl?: string;
+};
+
+type User_ = {
+    name: string;
+    iconUrl?: string;
 };
 
 type SearchbarProps = {
     user?: User | null;
 };
 
-const ChannelList: React.FC<{ channels: Channel[] }> = ({ channels }) => {
-    const router = useRouter();
+
+const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
+    const [channelList, setChannelList] = useState<string[]>([]);
+    const [users, setUsers] = useState<string[]>([]);
+    const [filteredChannels, setFilteredChannels] = useState<Channel[]>([]);
+    const [filteredUsers, setFilteredUsers] = useState<User_[]>([]);
+
+    const [targetChannel, setTargetChannel] = useState("");
+    const [targetUser, setTargetUser] = useState("");
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const router = useRouter()
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const querySnapshot = await getDocs(collection(firestore, 'users'));
+            const userData = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setUsers(userData);
+        };
+
+        fetchUsers();
+    }, [router.query]);
 
     const handleChannelClick = (channelId: string) => {
         router.push(`/${channelId}`);
     };
 
-    const menuItemSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
-
-    return (
-        <MenuList mt={-2.5} ml={85}  overflowY="auto">
-            <Text fontSize='18px' ml={3}>
-                Channel
-            </Text>
-            {channels.map((channel) => (
-                <MenuGroup  key={channel.id}>
-                    <MenuItem
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        onClick={() => handleChannelClick(channel.id)}
-                    >
-                        <Flex style={{ display: "flex", alignItems: "center" }}>
-                            <Image
-                                borderRadius="full"
-                                boxSize="30px"
-                                src="https://bit.ly/dan-abramov"
-                                alt="Dan Abramov"
-                            />
-                            <span style={{ marginLeft: '10px' }}>{channel.id}</span>
-                        </Flex>
-                    </MenuItem>
-                </MenuGroup>
-            ))}
-        </MenuList>
-    );
-};
-
-
-const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
-    const [channelList, setChannelList] = useState<Channel[]>([]);
-    const [filteredChannels, setFilteredChannels] = useState<Channel[]>([]);
-    const [targetChannel, setTargetChannel] = useState("");
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const handleUserClick = (uid: string) => {
+        router.push(`/users/profile/${uid}`);
+    };
 
     useEffect(() => {
         const fetchChannels = async () => {
             const querySnapshot = await getDocs(collection(firestore, "channels"));
             const channels = querySnapshot.docs.map((doc) => ({
                 id: doc.id,
+                ...doc.data(),
             }));
             setChannelList(channels);
         };
 
         fetchChannels();
-    }, []);
+    }, [router.query]);
 
     useEffect(() => {
         const filtered = channelList.filter((channel) =>
@@ -91,6 +88,14 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
         );
         setFilteredChannels(filtered);
     }, [targetChannel, channelList]);
+
+
+    useEffect(() => {
+        const filtered = users.filter((user) =>
+            user.email.toLowerCase().includes(targetUser.toLowerCase())
+        );
+        setFilteredUsers(filtered);
+    }, [targetChannel, users]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
@@ -100,18 +105,6 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
     return (
         <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
             <Flex flexGrow={1} mr={user ? 0 : 2} align="center">
-                <MenuButton
-                    px={4}
-                    py={2}
-                    transition="all 0.2s"
-                    borderRadius="md"
-                    borderWidth="1px"
-                    _hover={{ bg: "gray.400" }}
-                    _expanded={{ bg: "blue.400" }}
-                    _focus={{ boxShadow: "outline" }}
-                >
-                    TODO
-                </MenuButton>
                 <InputGroup ml={2}>
                     <InputLeftElement pointerEvents="none">
                         <SearchIcon color="gray.300" mb={1} />
@@ -135,12 +128,70 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
                         value={targetChannel}
                         onChange={handleInputChange}
                         onFocus={onOpen}
-                        onBlur={onClose}
+                        // onBlur={onClose}
                     />
                 </InputGroup>
             </Flex>
             {filteredChannels.length > 0 && (
-                <ChannelList channels={filteredChannels} />
+                <MenuList mt={-2.5} ml={85}  overflowY="auto">
+                    <Text fontSize='18px' ml={3}>
+                        Channel
+                    </Text>
+                    {filteredChannels.map((channel) => (
+                        <MenuGroup  key={channel.id}>
+                            <MenuItem
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                onClick={() => handleChannelClick(channel.id)}
+                            >
+                                <Flex style={{ display: "flex", alignItems: "center" }}>
+                                    {channel.iconUrl && <Image
+                                        borderRadius="full"
+                                        boxSize="30px"
+                                        src={channel.iconUrl}
+                                    />}
+                                    {!channel.iconUrl && <Icon
+                                        as = {FaQuestionCircle}
+                                        borderRadius="full"
+                                        boxSize="30px"
+                                        color='brand.100'
+                                    />}
+                                    <span style={{ marginLeft: '10px' }}>{channel.id}</span>
+                                </Flex>
+                            </MenuItem>
+                        </MenuGroup>
+                    ))}
+                    <Text fontSize='18px' ml={3}>
+                        User
+                    </Text>
+                    {filteredUsers.map((user_) => (
+                        <MenuGroup  key={user_.displayName}>
+                            <MenuItem
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="space-between"
+                                onClick={() => handleUserClick(user_.uid)}
+                            >
+                                <Flex style={{ display: "flex", alignItems: "center" }}>
+                                    {user_.iconUrl && <Image
+                                        borderRadius="full"
+                                        boxSize="30px"
+                                        src={user_.iconUrl}
+                                    />}
+                                    {!user_.iconUrl && <Icon
+                                        as = {FaQuestionCircle}
+                                        borderRadius="full"
+                                        boxSize="30px"
+                                        color='brand.100'
+                                    />}
+                                    <span style={{ marginLeft: '10px' }}>{user_.uid}</span>
+                                </Flex>
+                            </MenuItem>
+                        </MenuGroup>
+                    ))}
+
+                </MenuList>
             )}
         </Menu>
     );

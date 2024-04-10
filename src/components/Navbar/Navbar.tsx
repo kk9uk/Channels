@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Flex, Image } from "@chakra-ui/react";
 
 import { useAuthState } from "react-firebase-hooks/auth";
