@@ -54,44 +54,45 @@ const Home: NextPage = () => {
     setLoading(false);
   }, [setPostStateVal]);
 
-  // const buildUserFeed = useCallback(async () => {
-  //   setLoading(true);
-  //   console.log(channelStateValue.channels.length);
-    // try {
-    //   if (channelStateValue.channels.length === 0) {
-    //     // if user has no subscribed channels
-    //     buildNonUserFeed();
-    //   } else {
-    //     // create array of user subscribed channels' names
-    //     const userSubscribedChannels = channelStateValue.channels.map(
-    //       (channel) => channel.channelName
-    //     );
-    //     const postQuery = query(
-    //       collection(firestore, "posts"),
-    //       where("channelName", "in", userSubscribedChannels),
-    //       limit(10)
-    //     );
-    //     const postDocs = await getDocs(postQuery);
-    //     const post = postDocs.docs.map((doc) => ({
-    //       id: doc.id,
-    //       ...doc.data(),
-    //     }));
-    //     setPostStateVal((prev) => ({
-    //       ...prev,
-    //       postList: post as Post[],
-    //     }));
-    //   }
-    // } catch (error) {
-    //   console.log("first buildUserFeed error: ", error);
-    // }
-  //   setLoading(false);
-  // }, []);
+  const buildUserFeed = useCallback(async () => {
+    setLoading(true);
+    try {
+      if (channelStateValue.channels.length === 0) {
+        // if user has no subscribed channels
+        buildNonUserFeed();
+      } else {
+        // create array of user subscribed channels' names
+        let userSubscribedChannels = channelStateValue.channels.map(
+          (channel) => channel.channelName
+        );
+        // find posts where channelName is in userSubscribedChannels (channels subscribed by user)
+        const postQuery = query(
+          collection(firestore, "posts"),
+          where("channelName", "in", userSubscribedChannels),
+          limit(10)
+        );
+
+        const postDocs = await getDocs(postQuery);
+        const post = postDocs.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setPostStateVal((prev) => ({
+          ...prev,
+          postList: post as Post[],
+        }));
+      }
+    } catch (error) {
+      console.log("first buildUserFeed error: ", error);
+    }
+    setLoading(false);
+  }, [buildNonUserFeed, channelStateValue.channels, setPostStateVal]);
 
   const getUserPostsPushPull = () => {};
 
-  // useEffect(() => {
-  //   if (user && channelStateValue.channelFetched) buildUserFeed();
-  // }, [channelStateValue.channelFetched, buildUserFeed]);
+  useEffect(() => {
+    if (user && channelStateValue.channelFetched) buildUserFeed();
+  }, [channelStateValue.channelFetched, buildUserFeed, user]);
    
   useEffect(() => {
     // always start with !user, only fetcg NonUserFeed when loadingUSer is false also
