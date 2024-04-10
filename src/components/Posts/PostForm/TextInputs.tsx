@@ -1,10 +1,14 @@
 import React from 'react'
-import { Button, Flex, Input, Stack, Textarea } from '@chakra-ui/react';
+import { Button, Flex, Input, Stack, Text, Textarea } from '@chakra-ui/react';
+import { useRecoilState } from 'recoil';
+import { postState } from '../../../state/postState';
+import moment from 'moment';
 
 type TextInputsProps = {
     textInputs: {
         title: string;
         body: string;
+        tweetBody: string;
     };
     onChange: (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -14,6 +18,15 @@ type TextInputsProps = {
 };
 
 const TextInputs: React.FC<TextInputsProps> = ({textInputs, onChange, handleCreatePost, loading}) => {
+    const [postStateVal, setPostStateVal] = useRecoilState(postState);
+    if (postStateVal.isTweet && postStateVal.selectedPost) {
+        textInputs.title = `Retweet: ${postStateVal.selectedPost?.title}    ` +
+                        `By ${postStateVal.selectedPost?.creatorName}   ` +
+                        `At ${moment(new Date(postStateVal.selectedPost.createdAt?.seconds * 1000)).format("MMM DD, YYYY")}`;
+        textInputs.tweetBody = `Re: ${postStateVal.selectedPost?.body}`;
+    }
+    // console.log(textInputs);
+
     return (
         <Stack spacing={3} width="100%">
             <Input
@@ -30,6 +43,11 @@ const TextInputs: React.FC<TextInputsProps> = ({textInputs, onChange, handleCrea
                 borderColor: "black",
             }}
              />
+            {postStateVal.isTweet ? 
+                <Text fontSize="12pt">
+                    {textInputs.tweetBody}
+                </Text>
+            : <></>}
             <Textarea 
                 name="body"
                 value={textInputs.body}

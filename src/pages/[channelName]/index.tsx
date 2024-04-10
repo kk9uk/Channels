@@ -1,7 +1,7 @@
 import { doc, getDoc } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
-import React from "react";
-import { Channel } from "../../state/channelState";
+import React, { useEffect } from "react";
+import { Channel, channelState } from "../../state/channelState";
 import { firestore } from "../../firebase/clientApp";
 import safeJsonStringify from "safe-json-stringify";
 
@@ -10,16 +10,28 @@ import ChannelHeader from "../../components/Channel/ChannelHeader";
 import ContentLayout from "../../components/Layout/ContentLayout";
 import CreatePostLink from "../../components/Channel/CreatePostLink";
 import Posts from "../../components/Posts/Posts";
+import { useSetRecoilState } from "recoil";
+import ChannelDetails from "../../components/Channel/ChannelDetails";
+
 
 type ChannelPageProp = {
     channel: Channel;
 }
 
 const ChannelPage: React.FC<ChannelPageProp> = ({ channel }) => {
+    const setChannelStateVal = useSetRecoilState(channelState);
+
     if (!channel) {
         return <ChannelNotFound/>;
     }
     // console.log(channel);
+    //Todo: ChannelPage red line at use effect
+    useEffect(() => {
+        setChannelStateVal((prev) => ({
+            ...prev,
+            currentChannel: channel,
+        }));
+    }, [channel]);
 
     return (
         <>
@@ -30,7 +42,7 @@ const ChannelPage: React.FC<ChannelPageProp> = ({ channel }) => {
                     <Posts channelData={channel}/>
                 </>
                 <>
-                    <div>Right</div>
+                    <ChannelDetails channel={channel}/>
                 </>
             </ContentLayout>
         </>

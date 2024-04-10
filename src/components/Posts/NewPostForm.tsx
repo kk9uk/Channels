@@ -3,19 +3,22 @@ import React, { useState } from 'react'
 import { BiPoll } from "react-icons/bi";
 import { BsLink45Deg, BsMic } from "react-icons/bs";
 import { IoDocumentText, IoImageOutline } from "react-icons/io5";
-import { AiFillCloseCircle } from "react-icons/ai";
 import TabItem from './TabItem';
 import TextInputs from './PostForm/TextInputs';
 import ImageUpload from './PostForm/ImageUpload';
 import { User } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import { Post } from '../../state/postState';
+import { Post, postState } from '../../state/postState';
 import { Timestamp, addDoc, collection, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { firestore, storage } from '../../firebase/clientApp';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import useSelectFile from '../../hooks/useSelectFile';
+import { useRecoilState } from 'recoil';
 
 type NewPostFormProps = {
-    user: User;
+    user: User
+    channelName: string
+    channelIconUrl?: string
 };
 
 const formTabs: TabItem[] = [
@@ -46,20 +49,23 @@ export type TabItem = {
     icon: typeof Icon.arguments;
 }
 
-const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
+const NewPostForm: React.FC<NewPostFormProps> = ({ user, channelName, channelIconUrl }) => {
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
     const [textInput, setTextInput] = useState({
         title: "",
         body: "",
     });
-    const [selectedFile, setSelecedFile] = useState<string>();
+    const [postStateVal, setPostStateVal] = useRecoilState(postState);
+    const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
     const handleCreatePost = async() => {
         const { channelName } = router.query;
         // console.log(channelName);
+
+        // error of Post.id undefined, DO NOT touch this
         const newPost: Post = {
             channelName: channelName as string,
             creatorId: user?.uid,
@@ -76,13 +82,17 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
 
             if (selectedFile) {
                 const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
-                await uploadString(imageRef, selectedFile, 'data_url');
+                await uploadString(imageRef, selectedFile, "data_url");
                 const downloadURL = await getDownloadURL(imageRef);
 
                 await updateDoc(postDocRef, {
                     imageURL: downloadURL,
                 });
             }
+            setPostStateVal((prev) => ({
+                ...prev,
+                isTweet: false,
+              }));
 
             router.back();
         } catch (error: any) {
@@ -91,18 +101,6 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
         }
         setLoading(false);
     };
-
-    const onSelectedImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const reader = new FileReader();
-        if (event.target.files?.[0]) {
-            reader.readAsDataURL(event.target.files[0]);
-        }
-        reader.onload = (readerEvent) => {
-            if (readerEvent.target?.result) {
-            setSelecedFile(readerEvent.target.result as string);
-            };
-        };
-    }
 
     const onTextChange = ({
         target: { name, value },
@@ -137,9 +135,9 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
                     selectedTab === "Image & Video" && (
                         <ImageUpload
                             selectedFile={selectedFile}
-                            onSelectedImage={onSelectedImage}
+                            onSelectedImage={onSelectFile}
                             setSelectedTab={setSelectedTab}
-                            setSelectedFile={setSelecedFile}
+                            setSelectedFile={setSelectedFile}
                         />
                     )
                 }

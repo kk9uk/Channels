@@ -17,7 +17,7 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
     const [user] = useAuthState(auth);
     const [loading, setLoading] = useState(false);
     const { postStateVal, setPostStateVal,
-            onPushPull, onSelect, onDelete } = usePosts();
+            onPushPull, onSelect, onDelete, onTweet } = usePosts();
 
     const getPosts = async () => {
         try {
@@ -47,7 +47,7 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
 
     useEffect(() => {
         getPosts();
-    }, []);
+    }, [channelData]);
 
 
     return(
@@ -56,15 +56,20 @@ const Posts:React.FC<PostsProps> = ({ channelData }) => {
                 <PostLoader/>
             ) : (
             <Stack>
-                {postStateVal.postList.map((item) => (
+                {postStateVal.postList.map((post: Post, index) => (
                     <PostItem
-                        key={item.id}
-                        post={item} 
-                        isCreator={user?.uid === item.creatorId}
-                        numPushPull={undefined}
+                        key={post.id}
+                        post={post} 
+                        isCreator={user?.uid === post.creatorId}
+                        numPushPull={postStateVal.postPushPulls.find(
+                            (pushPull) => pushPull.postId === post.id)?.pushPullValue}
                         onPushPull={onPushPull}
                         onSelect={onSelect}
                         onDelete={onDelete}
+                        onTweet={onTweet}
+                        userPushPostValue={
+                            postStateVal.postPushPulls.find(
+                            (item) => item.postId === post.id)?.pushPullValue}
                     />
                 ))}
             </Stack>

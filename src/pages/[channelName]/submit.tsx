@@ -1,24 +1,42 @@
-import React from 'react';
-import ContentLayout from '../../components/Layout/ContentLayout';
-import { Box, Text} from '@chakra-ui/react';
-import NewPostForm from '../../components/Posts/NewPostForm';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../../firebase/clientApp';
+import React from "react";
+import ContentLayout from "../../components/Layout/ContentLayout";
+import { Box, Text } from "@chakra-ui/react";
+import NewPostForm from "../../components/Posts/NewPostForm";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase/clientApp";
+import { useRecoilValue } from "recoil";
+import { channelState } from "../../state/channelState";
+import useChannelState from "../../hooks/useChannelState";
+import ChannelDetails from "../../components/Channel/ChannelDetails";
 
 const SubmitPostPage: React.FC = () => {
-    const [user] = useAuthState(auth);
+  const [user] = useAuthState(auth);
+  // const channelStateValue = useRecoilValue(channelState);
+  // console.log(channelStateValue);
+  const { channelStateValue } = useChannelState();
+  // console.log(channelStateValue);
 
-    return (
-        <ContentLayout>
-            <>
-                <Box p="14px 0px" borderBottom="1px solid" borderColor="white">
-                    <Text>Create a post</Text>
-                </Box>
-                {user && <NewPostForm user = {user} />}
-            </>
-            <>{/* {About} */}</>
-        </ContentLayout>
-    );
+  return (
+    <ContentLayout>
+      <>
+        <Box p="14px 0px" borderBottom="1px solid" borderColor="white">
+          <Text>Create a post</Text>
+        </Box>
+        {user && channelStateValue.currentChannel && (
+          <NewPostForm
+            user={user}
+            channelName={channelStateValue.currentChannel.channelName}
+            channelIconUrl={channelStateValue.currentChannel.iconUrl}
+          />
+        )}
+      </>
+      <>
+        {channelStateValue.currentChannel && (
+          <ChannelDetails channel={channelStateValue.currentChannel} />
+        )}
+      </>
+    </ContentLayout>
+  );
 };
 
 export default SubmitPostPage;

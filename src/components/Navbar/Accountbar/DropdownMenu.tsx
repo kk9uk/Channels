@@ -9,7 +9,7 @@ import {
     Flex,
     MenuDivider
 } from "@chakra-ui/react";
-import { User, signOut } from "firebase/auth";
+import {User, signOut, getAuth} from "firebase/auth";
 import { VscAccount } from "react-icons/vsc";
 import {CgHeadset, CgProfile, CgUser} from "react-icons/cg";
 import { MdOutlineLogin } from "react-icons/md";
@@ -28,6 +28,7 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
     const router = useRouter();
     const setAuthPopupState = useSetRecoilState(authPopupState);
     const resetChannelState = useResetRecoilState(channelState);
+    const current_user = getAuth().currentUser?.uid;
 
     const logout = async () => {
         await signOut(auth);
@@ -35,8 +36,9 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
     };
 
     const profile =  () => {
-        router.push(`/users/profile`);
+        router.push(`/users/profile/${current_user}`);
     }
+
 
 
     return (
