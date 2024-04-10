@@ -10,7 +10,7 @@ import {
     MenuItem,
     MenuButton,
     Image,
-    Text, Icon,
+    Text, Icon, Box,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import { User } from "firebase/auth";
@@ -69,7 +69,9 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
     };
 
     const handleUserClick = (uid: string) => {
-        router.push(`/users/profile/${uid}`);
+
+        router.replace(`/users/profile/${uid}`);
+
     };
 
     useEffect(() => {
@@ -124,6 +126,8 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
 
     return (
         <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
+            <MenuButton>
+            </MenuButton>
             <Flex flexGrow={1} mr={user ? 0 : 2} align="center">
                 <InputGroup ml={2}>
                     <InputLeftElement pointerEvents="none">
@@ -152,32 +156,41 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
                     />
                 </InputGroup>
             </Flex>
+
             {filteredChannels.length >= 0 && (
-                <MenuList width='100%' overflowY="auto">
+                <MenuList pos="absolute"
+                          // mt="10"
+                          // ml="calc(100px - 7.5px)"
+                          overflowY="auto">
                     {filteredChannels.length >0 && <Text fontSize='18px' ml={3}>
                         Channel
                     </Text>}
                     {filteredChannels.map((channel) => (
                         <MenuGroup  key={channel.id}>
                             <MenuItem
-                                display="flex"
+                                width="100%"
+                                fontSize="10pt"
+                                _hover={{ bg: "gray.100" }}
+                                // display="flex"
                                 alignItems="center"
-                                justifyContent="space-between"
+                                // justifyContent="space-between"
                                 onClick={() => handleChannelClick(channel.id)}
                             >
                                 <Flex style={{ display: "flex", alignItems: "center" }}>
                                     {channel.iconUrl && <Image
                                         borderRadius="full"
-                                        boxSize="30px"
+                                        boxSize="18px"
                                         src={channel.iconUrl}
+                                        mr={2}
                                     />}
                                     {!channel.iconUrl && <Icon
                                         as = {FaQuestionCircle}
                                         borderRadius="full"
-                                        boxSize="30px"
+                                        boxSize="18px"
                                         color='brand.100'
+                                        mr={2}
                                     />}
-                                    <span style={{ marginLeft: '10px' }}>{channel.id}</span>
+                                    {channel.id}
                                 </Flex>
                             </MenuItem>
                         </MenuGroup>
@@ -194,18 +207,20 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
                                 onClick={() => handleUserClick(user_.uid)}
                             >
                                 <Flex style={{ display: "flex", alignItems: "center" }}>
-                                    {user_.iconUrl && <Image
+                                    {user_.photoURL && <Image
                                         borderRadius="full"
-                                        boxSize="30px"
-                                        src={user_.iconUrl}
+                                        boxSize="18px"
+                                        src={user_.photoURL}
+                                        mr={2}
                                     />}
-                                    {!user_.iconUrl && <Icon
+                                    {!user_.photoURL && <Icon
                                         as = {FaQuestionCircle}
                                         borderRadius="full"
-                                        boxSize="30px"
+                                        boxSize="18px"
                                         color='brand.100'
+                                        mr={2}
                                     />}
-                                    <span style={{ marginLeft: '10px' }}>{user_.displayName || user_.email}</span>
+                                    {user_.displayName || user_.email}
                                 </Flex>
                             </MenuItem>
                         </MenuGroup>
