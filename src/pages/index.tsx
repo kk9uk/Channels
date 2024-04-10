@@ -33,6 +33,7 @@ const Home: NextPage = () => {
   const { postStateVal, setPostStateVal, onPushPull, onSelect, onDelete, onTweet } =
     usePosts();
   const { channelStateValue } = useChannelState();
+  const checkFollow = useRecoilValue(userFollowerState);
 
   const buildNonUserFeed = useCallback(async () => {
     setLoading(true);
@@ -67,26 +68,24 @@ const Home: NextPage = () => {
         let userSubscribedChannels = channelStateValue.channels.map(
           (channel) => channel.channelName
         );
-        const checkFollow = useRecoilValue(userFollowerState);
         let userFollowed = checkFollow.follow.map(
           (item) => item.followerId
         );
+        console.log(userFollowed)
         // find posts where channelName is in userSubscribedChannels (channels subscribed by user)
-        const postQuery = query(
-          collection(firestore, "posts"),
-          or (
-            where("creatorId", "in", userFollowed),
-            where("channelName", "in", userSubscribedChannels)
-          ),
-          orderBy("createAt", "desc"),
-          limit(10)
-        );
+          const postRef = collection(firestore, "posts");
+          const channelPostQuery = query(
+            postRef,
+             where("channelName", "in", userSubscribedChannels)
+            ,limit(10)
+          );
 
-        const postDocs = await getDocs(postQuery);
+        const postDocs = await getDocs(channelPostQuery);
         const post = postDocs.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
+
         setPostStateVal((prev) => ({
           ...prev,
           postList: post as Post[],
