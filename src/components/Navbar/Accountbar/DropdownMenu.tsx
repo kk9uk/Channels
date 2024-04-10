@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import {ChevronDownIcon, SettingsIcon} from "@chakra-ui/icons";
 import {
     Menu,
     MenuButton,
@@ -11,13 +11,14 @@ import {
 } from "@chakra-ui/react";
 import { User, signOut } from "firebase/auth";
 import { VscAccount } from "react-icons/vsc";
-import { CgProfile } from "react-icons/cg";
+import {CgHeadset, CgProfile, CgUser} from "react-icons/cg";
 import { MdOutlineLogin } from "react-icons/md";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
 import {auth, firestore, storage} from "../../../firebase/clientApp";
 import { authPopupState } from "../../../state/authPopupState";
 import { channelState } from "../../../state/channelState";
 import { useRouter } from "next/router";
+
 
 type DropdownMenuProp = {
     user?: User | null;
@@ -71,7 +72,19 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
                                 Profile
                             </Flex>
                         </MenuItem>
-                        <MenuDivider/>                        
+                        <MenuDivider/>
+                        <MenuItem
+                            fontSize="10pt"
+                            fontWeight={700}
+                            _hover={{ bg: "blue.500", color: "#FFFFFF" }}
+                            onClick={profile}
+                        >
+                            <Flex align="center">
+                                <Icon fontSize={20} mr={2} as={SettingsIcon}/>
+                                Admin
+                            </Flex>
+                        </MenuItem>
+                        <MenuDivider/>
                         <MenuItem
                             fontSize="10pt"
                             fontWeight={700}
