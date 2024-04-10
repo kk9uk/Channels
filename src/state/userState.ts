@@ -2,10 +2,12 @@ import { atom } from "recoil";
 
 export type User = {
     id: string;
-    displayName: string | null | undefined;
+    uid: string;
+    displayName?: string | null | undefined;
     email?: string;
     photoURL?: string;
     introduction?: string;
+    isAdmin?: boolean
 };
 
 interface UserState {

@@ -5,11 +5,8 @@ import UserHeader from "../../../components/UserProfile/UserHeader";
 import UserImageEditPopup from "../../../components/UserProfile/UserImageEditPopup";
 import { collection, doc, getDoc, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 import { useRouter } from "next/router";
-import { getAuth } from "firebase/auth";
 import useUser from "../../../hooks/useUser";
-import { Post } from "../../../state/postState";
-import { User, userState } from "../../../state/userState";
-import { useSetRecoilState } from "recoil";
+import { User } from "../../../state/userState";
 import UserNotFound from "../../../components/UserProfile/userNotfound";
 import { Stack, Text } from "@chakra-ui/react";
 import usePosts from "../../../hooks/usePosts";
@@ -29,14 +26,28 @@ const UserPage: React.FC = () => {
 
     const fetchUser = async (uid: string) => {
         try {
-            const userDocRef = doc(firestore, "users", uid);
-            const userDoc = await getDoc(userDocRef);
-            console.log(userDoc);
-            const userData = userDoc.data() as User;
-            setUserStateValue((prev) => ({
-                ...prev,
-                selectedUser: { id: userDoc.id,photoURL: userDoc.id, ...userDoc.data() } as User,
-            }));
+            const userRef = collection(firestore, "users");
+            const querySnapshot = await getDocs(query(userRef, where("uid", "==", uid)));
+            // Get the current user's document from Firestore
+            console.log("current_user: ", uid);
+            querySnapshot.forEach((doc) => {
+                const userData = doc.data();
+                console.log("userData: ",userData)
+                setUserStateValue((prev) => ({
+                    ...prev,
+                    selectedUser: { id: doc.id, ...doc.data() } as User,
+                }));
+            });
+            // const userDocRef = doc(firestore, "users", uid);
+            // const userDoc = await getDoc(userDocRef);
+            // console.log(userDoc);
+            // const userData = userDoc.data() as User;
+            // console.log("userData: ",userData)
+            // setUserStateValue((prev) => ({
+            //     ...prev,
+            //     selectedUser: { id: userDoc.id, ...userDoc.data() } as User,
+            // }));
+            console.log("userStateValue",userStateValue.selectedUser)
 
 
         } catch (error) {
