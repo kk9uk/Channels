@@ -39,6 +39,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     const isFollowed = !!checkFollow.follow.find(item => item.followerId === user.uid);
     const currentUser = getAuth().currentUser?.uid;
     console.log(checkFollow);
+    console.log(user.id);
 
     const handleIntroductionChange = (
         event: React.ChangeEvent<HTMLTextAreaElement>
