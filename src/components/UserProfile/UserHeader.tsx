@@ -26,20 +26,21 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
         "https://www.utep.edu/extendeduniversity/utepconnect/blog/june-2019/how-an-online-degree-can-prepare-you-for-remote-positions.jpg"
     );
     const [editMode, setEditMode] = useState<boolean>(false);
-    const [textInput, setTextInput] = useState({
-        title: "",
-        body: "",
-    })
     const [isOpened, setIsOpened] = useState(false);
     const [canEdit, setCanEdit] = useState(false);
     const [userAuthState] = useAuthState(auth);
-    const router= useRouter();
-    // const myFollow = useRecoilValue(userFollowerState).follow;
+    const router = useRouter();
     const checkFollow = useRecoilValue(userFollowerState);
     const isFollowed = !!checkFollow.follow.find(item => item.followerId === user.uid);
+    // const [ isSelfUser, setIsSelfUser ] = useState(false);
     const currentUser = getAuth().currentUser?.uid;
     console.log(checkFollow);
-    console.log(user.id);
+    console.log(userAuthState);
+    // console.log(user.id);
+
+    // if (userAuthState?.uid == user.uid) {
+    //     setIsSelfUser(true);
+    // }
 
     const handleIntroductionChange = (
         event: React.ChangeEvent<HTMLTextAreaElement>
@@ -75,9 +76,6 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     }
 
     const { onFollowOrUnfollow, isLoading} = useFollower();
-    function onFollowOrUnfollowUser(user: User, isFollowed: boolean) {
-        //TODO: follow function
-    }
 
     useEffect(() => {
         console.log("useEffect is running")
@@ -150,18 +148,22 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
                                 borderRadius="full"
                             />
                         )}
-                        <Button
-                            variant={isFollowed ? "outline" : "solid"}
-                            height="30px"
-                            fontSize="12pt"
-                            pr={6}
-                            pl={6}
-                            top={6}
-                            // isLoading={isLoading}
-                            onClick={() => onFollowOrUnfollow(user, isFollowed)}
-                        >
-                            {isFollowed ? "Unfollow" : "Follow"}
-                        </Button>
+                        {!(userAuthState?.uid === user.uid) ? 
+                            <Button
+                                variant={isFollowed ? "outline" : "solid"}
+                                height="30px"
+                                fontSize="12pt"
+                                pr={6}
+                                pl={6}
+                                top={6}
+                                // isLoading={isLoading}
+                                onClick={() => onFollowOrUnfollow(user, isFollowed)}
+                            >
+                                {isFollowed ? "Unfollow" : "Follow"}
+                            </Button>
+                        : 
+                            <></>
+                        }
 
                     </Flex>
 
@@ -243,7 +245,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
                             </>
 
                         )}
-                        {canEdit && !editMode && (
+                        {canEdit && !editMode && (userAuthState?.uid === user.uid) && (
                             <Button height="30px" fontSize="12pt" pr={6} pl={6} onClick={enableEditMode}>
                                 Edit your Profile
                             </Button>
