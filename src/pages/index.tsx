@@ -26,6 +26,7 @@ import { channelState } from "../state/channelState";
 import { useRecoilValue } from "recoil";
 import useChannelState from "../hooks/useChannelState";
 import { userFollowerState } from "../state/userFollowerState";
+import Recommendations from "../components/Channel/Recommndations";
 
 const Home: NextPage = () => {
   const [user, loadingUser] = useAuthState(auth);
@@ -138,7 +139,9 @@ const Home: NextPage = () => {
           </Stack>
         )}
       </>
-      <>{/* Recommendations */}</>
+      <>
+        <Recommendations />
+      </>
     </ContentLayout>
   );
 };
