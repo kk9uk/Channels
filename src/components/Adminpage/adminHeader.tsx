@@ -26,9 +26,10 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { firestore } from '../../firebase/clientApp';
+import {auth, firestore} from '../../firebase/clientApp';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { HamburgerIcon } from '@chakra-ui/icons';
+import {useAuthState} from "react-firebase-hooks/auth";
 //TODO: Add a Prop
 //ignore all the red line now, it won't affect anything
 
@@ -43,6 +44,7 @@ const AdminHeader = () => {
     const [selectedUserId, setSelectedUserId] = useState('');
     const cancelRef = React.useRef()
     const { isOpen, onOpen, onClose } = useDisclosure()
+    // const [userAuthState] = useAuthState(auth);
 
     useEffect(() => {
         const fetchUsers = async () => {
