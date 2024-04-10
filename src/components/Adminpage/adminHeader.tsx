@@ -30,6 +30,7 @@ import {auth, firestore} from '../../firebase/clientApp';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import {useAuthState} from "react-firebase-hooks/auth";
+import { getAuth } from 'firebase/auth';
 //TODO: Add a Prop
 //ignore all the red line now, it won't affect anything
 
@@ -132,7 +133,10 @@ const AdminHeader = () => {
                             <Th>Name/Id</Th>
                             {isEmailVisible && <Th>Email</Th>}
                             {isEmailVerifiedVisible && <Th>Email Verified</Th>}
-                            {isOptionVisible && <Th>Suspend</Th>}
+
+                            {/* On develop */}
+                            {/* {isOptionVisible && <Th>Suspend</Th>} */}
+
                             {isOptionVisible && <Th>Delete</Th>}
                             <Th>
                                 <Menu>
@@ -198,11 +202,12 @@ const AdminHeader = () => {
                                 )}
                                 {isOptionVisible && (
                                     <>
-                                        <Td>
+                                        {/* On develop */}
+                                        {/* <Td>
                                             <Button colorScheme="red" onClick={() => handleSuspend(user.id)}>
                                                 Suspend
                                             </Button>
-                                        </Td>
+                                        </Td> */}
                                         <Td>
                                             <Button colorScheme="red" onClick={() => handleDelete(user.id)}>
                                                 Delete
