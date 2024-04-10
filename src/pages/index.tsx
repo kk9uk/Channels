@@ -10,6 +10,7 @@ import {
   collection,
   getDocs,
   limit,
+  or,
   orderBy,
   query,
   where,
@@ -63,6 +64,9 @@ const Home: NextPage = () => {
         buildNonUserFeed();
       } else {
         // create array of user subscribed channels' names
+        let userSubscribedChannels = channelStateValue.channels.map(
+          (channel) => channel.channelName
+        );
         const checkFollow = useRecoilValue(userFollowerState);
         let userFollowed = checkFollow.follow.map(
           (item) => item.followerId
@@ -70,7 +74,11 @@ const Home: NextPage = () => {
         // find posts where channelName is in userSubscribedChannels (channels subscribed by user)
         const postQuery = query(
           collection(firestore, "posts"),
-          where("creatorId", "in", userFollowed),
+          or (
+            where("creatorId", "in", userFollowed),
+            where("channelName", "in", userSubscribedChannels)
+          ),
+          orderBy("createAt", "desc"),
           limit(10)
         );
 
