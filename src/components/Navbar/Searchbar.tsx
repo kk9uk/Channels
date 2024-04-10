@@ -158,14 +158,12 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
             </Flex>
 
             {filteredChannels.length >= 0 && (
-                <MenuList pos="absolute"
-                          // mt="10"
-                          // ml="calc(100px - 7.5px)"
+                <MenuList ml="2" minWidth="200px" maxHeight="200px" width="150%"
                           overflowY="auto">
-                    {filteredChannels.length >0 && <Text fontSize='18px' ml={3}>
+                    {filteredChannels.length >0 && <Text pl={3} mb={1} fontSize="12px" fontWeight={500} color="gray.500">
                         Channel
                     </Text>}
-                    {filteredChannels.map((channel) => (
+                    {filteredChannels.slice(0, 3).map((channel) => (
                         <MenuGroup  key={channel.id}>
                             <MenuItem
                                 width="100%"
@@ -195,10 +193,10 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
                             </MenuItem>
                         </MenuGroup>
                     ))}
-                    <Text fontSize='18px' ml={3}>
+                    <Text pl={3} mb={1} fontSize="12px" fontWeight={500} color="gray.500">
                         User
                     </Text>
-                    {filteredUsers.map((user_) => (
+                    {filteredUsers.slice(0, 3).map((user_) => (
                         <MenuGroup  key={user_.displayName}>
                             <MenuItem
                                 display="flex"
