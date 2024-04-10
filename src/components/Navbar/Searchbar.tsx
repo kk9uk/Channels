@@ -185,7 +185,7 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
                                         boxSize="30px"
                                         color='brand.100'
                                     />}
-                                    <span style={{ marginLeft: '10px' }}>{user_.uid}</span>
+                                    <span style={{ marginLeft: '10px' }}>{user_.displayName || user_.email}</span>
                                 </Flex>
                             </MenuItem>
                         </MenuGroup>
