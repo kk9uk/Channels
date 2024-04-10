@@ -24,6 +24,7 @@ import useChannelBar from "../hooks/useChannelBar";
 import { channelState } from "../state/channelState";
 import { useRecoilValue } from "recoil";
 import useChannelState from "../hooks/useChannelState";
+import { userFollowerState } from "../state/userFollowerState";
 
 const Home: NextPage = () => {
   const [user, loadingUser] = useAuthState(auth);
@@ -62,13 +63,14 @@ const Home: NextPage = () => {
         buildNonUserFeed();
       } else {
         // create array of user subscribed channels' names
-        let userSubscribedChannels = channelStateValue.channels.map(
-          (channel) => channel.channelName
+        const checkFollow = useRecoilValue(userFollowerState);
+        let userFollowed = checkFollow.follow.map(
+          (item) => item.followerId
         );
         // find posts where channelName is in userSubscribedChannels (channels subscribed by user)
         const postQuery = query(
           collection(firestore, "posts"),
-          where("channelName", "in", userSubscribedChannels),
+          where("creatorId", "in", userFollowed),
           limit(10)
         );
 
