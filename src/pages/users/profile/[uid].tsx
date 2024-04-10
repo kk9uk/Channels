@@ -17,6 +17,9 @@ import { Post } from "../../../state/postState";
 
 const UserPage: React.FC = () => {
     const router = useRouter();
+
+
+
     const [loading, setLoading] = useState(false);
     const {
         setUserStateValue,
@@ -81,9 +84,22 @@ const UserPage: React.FC = () => {
     }, [setPostStateVal, router.query]);
 
     useEffect(() => {
-        // const current_user = getAuth();
-        // console.log("current_user",current_user.currentUser?.uid)
+        console.log("useEffect is running on properly")
         console.log("query:", uid);
+        console.log("userStateValue.selectedUser:", userStateValue.selectedUser);
+        if (uid) {
+            console.log("fetching is processing")
+            fetchUser(uid as string);
+            buildUserProfileFeed();
+        }
+        console.log("selected User ", userStateValue.selectedUser);
+    }, [router.query]);
+
+    useEffect(() => {
+        // const current_user = getAuth();
+        console.log("useEffect is running on properly")
+        console.log("query:", uid);
+        console.log("userStateValue.selectedUser:", userStateValue.selectedUser);
         if (uid && !userStateValue.selectedUser) {
             console.log("fetching is processing")
             fetchUser(uid as string);
@@ -91,7 +107,7 @@ const UserPage: React.FC = () => {
         }
         console.log("selected User ", userStateValue.selectedUser);
 
-    }, [router.query, userStateValue.selectedUser, buildUserProfileFeed, uid, fetchUser]);
+    }, [userStateValue.selectedUser, buildUserProfileFeed, uid, fetchUser, currentUser]);
 
     return (
         <ContentLayout>
