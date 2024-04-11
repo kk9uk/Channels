@@ -15,7 +15,7 @@ interface ChannelMenuState{
 }
 
 export const defaultMenuItem: ChannelMenuItem ={
-    displayText: 'Home',
+    displayText: '',
     link: '/',
     icon: TiHome,
     iconColor: 'black'

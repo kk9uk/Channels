@@ -112,10 +112,6 @@ const UserPage: React.FC = () => {
     return (
         <ContentLayout>
             <>
-                {!userStateValue.selectedUser && <UserNotFound/>}
-                {userStateValue.selectedUser && <UserHeader user={userStateValue.selectedUser} />}
-            </>
-            <>
             {loading ? (
           <PostLoader />
         ) : (
@@ -140,6 +136,10 @@ const UserPage: React.FC = () => {
           </Stack>
         )}
 
+            </>
+            <>
+                {!userStateValue.selectedUser && <UserNotFound/>}
+                {userStateValue.selectedUser && <UserHeader user={userStateValue.selectedUser} />}
             </>
         </ContentLayout>
     );

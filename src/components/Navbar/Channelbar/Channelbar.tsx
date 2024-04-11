@@ -8,7 +8,7 @@ import {
     Icon,
     Text, Image
 } from "@chakra-ui/react";
-import { TiHome } from "react-icons/ti";
+import {TiMessageTyping} from "react-icons/ti";
 
 import DropdownMenu from "./DropdownMenu";
 import useChannelBar from "../../../hooks/useChannelBar";
@@ -37,7 +37,7 @@ const ChannelBar: React.FC = () => {
                             mr={2}
                         />
                         ) : (
-                        <Icon color="#FFFFFF" fontSize={24} mr={{ sm: 0, md: 1 }} as={TiHome}/>
+                        <Icon color="#FFFFFF" fontSize={24} mr={{ sm: 0, md: 1 }} as={TiMessageTyping}/>
                     )}
                     <Flex align="center">
                         <Flex display={{ sm: "none", md: "flex" }}>
