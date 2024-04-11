@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Box, Button, Flex, Icon, Input, Text, Textarea} from "@chakra-ui/react";
+import {Box, Button, Center, Flex, Icon, Input, Text, Textarea} from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 import { Card } from "@chakra-ui/react";
 import { FaQuestionCircle } from "react-icons/fa";
@@ -79,15 +79,16 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
 
     useEffect(() => {
         console.log("useEffect is running")
+        setIntroduction("")
         if (!introduction && user.introduction){
             setIntroduction(user.introduction)
         }
 
 
-    }, [router.query]);
+    }, [router.query, userAuthState, user]);
 
     useEffect(() => {
-        console.log("useEffect is running")
+        console.log("useEffect is running: setting edit")
         setEditMode(false);
         if(!canEdit){
             if (currentUser == user.uid){
@@ -100,7 +101,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
             }
         }
 
-    }, [router.query, userAuthState]);
+    }, [router.query, userAuthState, user]);
 
     if (!user.email){
         return <UserNotFound/>
@@ -110,7 +111,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
         //
         <>
             <UserImageEditPopup isOpened={isOpened} onClose={() => setIsOpened(false)} user={user}/>
-            {/*<Center color="white" w="100%" position="absolute">*/}
+            <Center color="white" w="100%" >
                 <Card alignContent="center" justifyContent="center" maxW="sm" top="10" width="100%">
                     <Box
                         position="relative"
@@ -136,6 +137,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
                                 src={user.photoURL}
                                 border="4px solid white"
                                 borderRadius="full"
+                                boxSize='100px'
                             />
                         ) : (
                             <Icon
@@ -252,7 +254,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
                         )}
                     </Flex>
                 </Card>
-            {/*</Center>*/}
+            </Center>
         </>
 
     );
