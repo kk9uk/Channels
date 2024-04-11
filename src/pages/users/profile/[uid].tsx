@@ -14,6 +14,7 @@ import PostItem from "../../../components/Posts/PostItem";
 import PostLoader from "../../../components/Posts/PostLoader";
 import { getAuth } from "firebase/auth";
 import { Post } from "../../../state/postState";
+import UserPostNotFound from "../../../components/UserProfile/userPostNotFound";
 
 const UserPage: React.FC = () => {
     const router = useRouter();
@@ -115,25 +116,30 @@ const UserPage: React.FC = () => {
             {loading ? (
           <PostLoader />
         ) : (
-          <Stack>
-            {postStateVal.postList.map((post: Post) => (
-              <PostItem
-                key={post.id}
-                post={post}
-                isCreator={false}
-                numPushPull={post.numPushPull}
-                onPushPull={onPushPull}
-                onDelete={onDelete}
-                onSelect={onSelect}
-                onTweet={onTweet}
-                userPushPostValue={
-                  postStateVal.postPushPulls.find(
-                    (item) => item.postId === post.id
-                  )?.pushPullValue
-                }
-              />
-            ))}
-          </Stack>
+                <Stack>
+                    {postStateVal.postList.length === 0 && (
+                        <UserPostNotFound>
+                        </UserPostNotFound>
+                    )}
+
+                    {postStateVal.postList.map((post) => (
+                        <PostItem
+                            key={post.id}
+                            post={post}
+                            isCreator={false}
+                            numPushPull={post.numPushPull}
+                            onPushPull={onPushPull}
+                            onDelete={onDelete}
+                            onSelect={onSelect}
+                            onTweet={onTweet}
+                            userPushPostValue={
+                                postStateVal.postPushPulls.find((item) => item.postId === post.id)
+                                    ?.pushPullValue
+                            }
+                        />
+                    ))}
+                </Stack>
+
         )}
 
             </>
