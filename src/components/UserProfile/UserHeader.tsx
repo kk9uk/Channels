@@ -80,7 +80,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     useEffect(() => {
         console.log("useEffect is running")
         setIntroduction("")
-        if (!introduction && user.introduction){
+        if (user.introduction){
             setIntroduction(user.introduction)
         }
 
@@ -208,7 +208,7 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
                                 />
                             )}
                             {!editMode && (
-                                <Flex width={"800px"}>
+                                <Flex>
                                     <Text>
                                         {introduction}
                                     </Text>
