@@ -1,16 +1,19 @@
 import React from "react";
 import { FaQuestionCircle } from "react-icons/fa";
 import { Box, Button, Flex, Icon, Image, Text } from "@chakra-ui/react";
-
+import { channelState } from "../../state/channelState";
 import { Channel } from "../../state/channelState";
 import useChannelState from "../../hooks/useChannelState";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 type ChannelHeaderProp = {
     channel: Channel;
 }
 
 const ChannelHeader: React.FC<ChannelHeaderProp> = ({ channel }) => {
-    const { channelStateValue, onJoinOrLeaveChannel, isLoading } = useChannelState();
+    const { onJoinOrLeaveChannel, isLoading } = useChannelState();
+    const channelStateValue = useRecoilValue(channelState);
+    const currentChanneIconURL = channelStateValue.currentChannel?.iconUrl;
     const isJoined = !!channelStateValue.channels.find(item => item.channelName === channel.channelName);
 
     return (
@@ -18,8 +21,17 @@ const ChannelHeader: React.FC<ChannelHeaderProp> = ({ channel }) => {
             <Box height="50%" bg="blue.500"/>
             <Flex justify="center" bg="#FFFFFF" flexGrow={1}>
                 <Flex width="95%">
-                    {channel.iconURL ? (
-                        <Image/>
+                    {currentChanneIconURL ? (
+                        <Image 
+                            borderRadius="full"
+                            boxSize="66px"
+                            src={currentChanneIconURL}
+                            alt="icon"
+                            position="relative"
+                            top={-3}
+                            color="blue.500"
+                            border="4px solid white"
+                        />
                     ) : (
                         <Icon
                             as={FaQuestionCircle}

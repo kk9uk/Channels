@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import {ChevronDownIcon, SettingsIcon} from "@chakra-ui/icons";
 import {
     Menu,
     MenuButton,
@@ -9,27 +9,41 @@ import {
     Flex,
     MenuDivider
 } from "@chakra-ui/react";
-import { User, signOut } from "firebase/auth";
+import {User, signOut, getAuth} from "firebase/auth";
 import { VscAccount } from "react-icons/vsc";
-import { CgProfile } from "react-icons/cg";
+import {CgProfile} from "react-icons/cg";
 import { MdOutlineLogin } from "react-icons/md";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
-import { auth } from "../../../firebase/clientApp";
+import {auth} from "../../../firebase/clientApp";
 import { authPopupState } from "../../../state/authPopupState";
 import { channelState } from "../../../state/channelState";
+import { useRouter } from "next/router";
+
 
 type DropdownMenuProp = {
     user?: User | null;
 };
 
 const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
+    const router = useRouter();
     const setAuthPopupState = useSetRecoilState(authPopupState);
     const resetChannelState = useResetRecoilState(channelState);
+    const current_user = getAuth().currentUser?.uid;
 
     const logout = async () => {
         await signOut(auth);
         resetChannelState();
     };
+
+    const profile =  () => {
+        router.push(`/users/profile/${current_user}`);
+    }
+
+    const admin =  () => {
+        router.push(`/admin`);
+    }
+
+
 
     return (
         <Menu>
@@ -57,10 +71,23 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
                             fontSize="10pt"
                             fontWeight={700}
                             _hover={{ bg: "blue.500", color: "#FFFFFF" }}
+                            onClick={profile}
                         >
                             <Flex align="center">
                                 <Icon fontSize={20} mr={2} as={CgProfile}/>
                                 Profile
+                            </Flex>
+                        </MenuItem>
+                        <MenuDivider/>
+                        <MenuItem
+                            fontSize="10pt"
+                            fontWeight={700}
+                            _hover={{ bg: "blue.500", color: "#FFFFFF" }}
+                            onClick={admin}
+                        >
+                            <Flex align="center">
+                                <Icon fontSize={20} mr={2} as={SettingsIcon} />
+                                Admin
                             </Flex>
                         </MenuItem>
                         <MenuDivider/>

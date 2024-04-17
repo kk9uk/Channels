@@ -3,6 +3,7 @@ import { Box, Button, Divider, Input, Modal, ModalBody, ModalCloseButton, ModalC
 import { auth, firestore } from "../../../firebase/clientApp";
 import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
+import {useRouter} from "next/router";
 
 type CreateChannelPopupProp = {
     isOpened: boolean;
@@ -15,6 +16,7 @@ const CreateChannelPopup: FunctionComponent<CreateChannelPopupProp> = ({ isOpene
     const [error, setError] = useState("");
     const [user] = useAuthState(auth);
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter()
 
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.value.length > 21) return;
@@ -51,9 +53,12 @@ const CreateChannelPopup: FunctionComponent<CreateChannelPopupProp> = ({ isOpene
                                 {
                                     channelName: channelName,
                                     isAdmin: true,
-                                    iconURL: ""
+                                    iconUrl: ""
                                 }
                 );
+                onClose();
+                setIsLoading(false);
+                router.reload();
             });
         } catch (error: any) {
             console.log("CreateChannelPopup: ", error);
