@@ -9,6 +9,7 @@ import { addDoc, collection } from "firebase/firestore";
 import { User } from "firebase/auth";
 
 const AuthPopupSignUp: FunctionComponent = () => {
+    //state value set
     const setAuthPopupState = useSetRecoilState(authPopupState);
     const [credentials, setCredentials] = useState({
         email: "",
@@ -55,6 +56,7 @@ const AuthPopupSignUp: FunctionComponent = () => {
     }, [user]);
 
     return (
+        // ui design
         <form onSubmit={onSubmit}>
             <Input
                 required

@@ -15,8 +15,7 @@ import { authPopupState } from "../state/authPopupState";
 import { useRouter } from "next/router";
 
 const useChannelState = () => {
-  const [channelStateValue, setChannelStateValue] =
-    useRecoilState(channelState);
+  const [channelStateValue, setChannelStateValue] = useRecoilState(channelState);
   const [isLoading, setIsLoading] = useState(false);
   const [isServerError, setServerError] = useState("");
   const [user] = useAuthState(auth);
@@ -46,8 +45,8 @@ const useChannelState = () => {
         iconUrl: channel.iconUrl || "",
       };
       batch.set(
-        doc(firestore, `users/${user?.uid}/channels`, channel.channelName),
-        newChannel
+          doc(firestore, `users/${user?.uid}/channels`, channel.channelName),
+          newChannel
       );
 
       batch.update(doc(firestore, "channels", channel.channelName), {
@@ -68,6 +67,7 @@ const useChannelState = () => {
   };
 
   const leaveChannel = async (channelName: string) => {
+    //processing with database
     try {
       const batch = writeBatch(firestore);
       batch.delete(doc(firestore, `users/${user?.uid}/channels`, channelName));
@@ -78,7 +78,7 @@ const useChannelState = () => {
       setChannelStateValue((prev) => ({
         ...prev,
         channels: prev.channels.filter(
-          (item) => item.channelName !== channelName
+            (item) => item.channelName !== channelName
         ),
       }));
     } catch (error: any) {
@@ -92,7 +92,7 @@ const useChannelState = () => {
     setIsLoading(true);
     try {
       const channelDocs = await getDocs(
-        collection(firestore, `users/${user?.uid}/channels`)
+          collection(firestore, `users/${user?.uid}/channels`)
       );
       const channels = channelDocs.docs.map((doc) => ({ ...doc.data() }));
       setChannelStateValue((prev) => ({
@@ -107,6 +107,7 @@ const useChannelState = () => {
     setIsLoading(false);
   };
 
+  // get the channel Data
   const getChannelData = async (channelName: string) => {
     try {
       const channelDocRef = doc(firestore, "channels", channelName);
@@ -136,6 +137,7 @@ const useChannelState = () => {
       getChannelData(channelName as string);
     }
   }, [router.query, channelStateValue.currentChannel]);
+
   return {
     channelStateValue,
     onJoinOrLeaveChannel,

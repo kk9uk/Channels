@@ -1,5 +1,5 @@
 import React from "react";
-import {ChevronDownIcon, SettingsIcon} from "@chakra-ui/icons";
+import { ChevronDownIcon, SettingsIcon } from "@chakra-ui/icons";
 import {
     Menu,
     MenuButton,
@@ -9,16 +9,15 @@ import {
     Flex,
     MenuDivider
 } from "@chakra-ui/react";
-import {User, signOut, getAuth} from "firebase/auth";
+import { User, signOut, getAuth } from "firebase/auth";
 import { VscAccount } from "react-icons/vsc";
-import {CgProfile} from "react-icons/cg";
+import { CgProfile } from "react-icons/cg";
 import { MdOutlineLogin } from "react-icons/md";
 import { useResetRecoilState, useSetRecoilState } from "recoil";
-import {auth} from "../../../firebase/clientApp";
+import { auth } from "../../../firebase/clientApp";
 import { authPopupState } from "../../../state/authPopupState";
 import { channelState } from "../../../state/channelState";
 import { useRouter } from "next/router";
-
 
 type DropdownMenuProp = {
     user?: User | null;
@@ -30,20 +29,21 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
     const resetChannelState = useResetRecoilState(channelState);
     const current_user = getAuth().currentUser?.uid;
 
+    // Function to handle the logout
     const logout = async () => {
         await signOut(auth);
         resetChannelState();
     };
 
-    const profile =  () => {
+    // Function to navigate to the user's profile page
+    const profile = () => {
         router.push(`/users/profile/${current_user}`);
     }
 
-    const admin =  () => {
+    // Function to navigate to the admin page
+    const admin = () => {
         router.push(`/admin`);
     }
-
-
 
     return (
         <Menu>
@@ -61,11 +61,12 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
                             as={VscAccount}
                         />
                     </Flex>
-                    <ChevronDownIcon color="#FFFFFF"/>
+                    <ChevronDownIcon color="#FFFFFF" />
                 </Flex>
             </MenuButton>
             <MenuList>
                 {user ? (
+                    // Display menu items for authenticated user
                     <>
                         <MenuItem
                             fontSize="10pt"
@@ -74,11 +75,11 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
                             onClick={profile}
                         >
                             <Flex align="center">
-                                <Icon fontSize={20} mr={2} as={CgProfile}/>
+                                <Icon fontSize={20} mr={2} as={CgProfile} />
                                 Profile
                             </Flex>
                         </MenuItem>
-                        <MenuDivider/>
+                        <MenuDivider />
                         <MenuItem
                             fontSize="10pt"
                             fontWeight={700}
@@ -90,7 +91,7 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
                                 Admin
                             </Flex>
                         </MenuItem>
-                        <MenuDivider/>
+                        <MenuDivider />
                         <MenuItem
                             fontSize="10pt"
                             fontWeight={700}
@@ -98,13 +99,13 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
                             onClick={logout}
                         >
                             <Flex align="center">
-                                <Icon fontSize={20} mr={2} as={MdOutlineLogin}/>
+                                <Icon fontSize={20} mr={2} as={MdOutlineLogin} />
                                 Logout
                             </Flex>
                         </MenuItem>
                     </>
-                )
-                      : (
+                ) : (
+                    // Display menu item for unauthenticated user
                     <>
                         <MenuItem
                             fontSize="10pt"
@@ -113,7 +114,7 @@ const DropdownMenu: React.FC<DropdownMenuProp> = ({ user }) => {
                             onClick={() => setAuthPopupState({ isOpened: true, view: "Login" })}
                         >
                             <Flex align="center">
-                                <Icon fontSize={20} mr={2} as={MdOutlineLogin}/>
+                                <Icon fontSize={20} mr={2} as={MdOutlineLogin} />
                                 Login / Sign Up
                             </Flex>
                         </MenuItem>

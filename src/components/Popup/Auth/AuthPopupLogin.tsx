@@ -7,6 +7,7 @@ import { auth } from "../../../firebase/clientApp";
 import { FIREBASE_ERROR } from "../../../firebase/error";
 
 const AuthPopupLogin: FunctionComponent = () => {
+    //State value set
     const setAuthPopupState = useSetRecoilState(authPopupState);
     const [credentials, setCredentials] = useState({
         email: "",
@@ -32,6 +33,7 @@ const AuthPopupLogin: FunctionComponent = () => {
     };
 
     return (
+        // ui design
         <form onSubmit={onSubmit}>
             <Input
                 required

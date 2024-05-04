@@ -26,10 +26,12 @@ const AuthPopupOAuth: FunctionComponent = () => {
 
     return (
         <Flex direction="column" width="100%" mb={4}>
+            {/* Display button for signing in with Google */}
             <Button variant="oauth" isLoading={isLoading} onClick={() => signInWithGoogle()}>
                 <Image src="/images/google.png" height="20px" mr={4}/>
                 Continue with Google
             </Button>
+            {/* Display server error message */}
             {serverError && <Text>{serverError.message}</Text>}
         </Flex>
     );

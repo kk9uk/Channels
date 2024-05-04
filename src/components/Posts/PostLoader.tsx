@@ -6,6 +6,7 @@ type PostLoaderProps = {
 };
 
 const PostLoader:React.FC<PostLoaderProps> = () => {
+    // post loading design
     return (
         <Stack spacing={6}>
             <Box padding="10px 10px" boxShadow='lg' bg='white' borderRadius={4}>

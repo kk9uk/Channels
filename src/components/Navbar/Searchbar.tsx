@@ -38,6 +38,7 @@ type SearchbarProps = {
 };
 
 
+// the function used to provide the searching the user and the chanenel
 const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
     const [channelList, setChannelList] = useState<string[]>([]);
     const [users, setUsers] = useState<string[]>([]);
@@ -51,6 +52,7 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
     const router = useRouter()
 
 
+    // update the user every router
     useEffect(() => {
         const fetchUsers = async () => {
             const querySnapshot = await getDocs(collection(firestore, 'users'));
@@ -64,6 +66,7 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
         fetchUsers();
     }, [router.query]);
 
+    // route to other page
     const handleChannelClick = (channelId: string) => {
         router.push(`/${channelId}`);
     };
@@ -74,6 +77,7 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
 
     };
 
+    // update the Channels every route
     useEffect(() => {
         const fetchChannels = async () => {
             const querySnapshot = await getDocs(collection(firestore, "channels"));
@@ -95,6 +99,7 @@ const Searchbar: React.FC<SearchbarProps> = ({ user }) => {
     }, [targetChannel, channelList]);
 
 
+    // update every searching  if the input have change
     useEffect(() => {
         const filtered = users.filter((user) => {
             let displayNameMatch = null
