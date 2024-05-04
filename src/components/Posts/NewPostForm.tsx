@@ -49,7 +49,9 @@ export type TabItem = {
     icon: typeof Icon.arguments;
 }
 
+// New post forming
 const NewPostForm: React.FC<NewPostFormProps> = ({ user, channelName, channelIconUrl }) => {
+    // State value
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
     const [textInput, setTextInput] = useState({

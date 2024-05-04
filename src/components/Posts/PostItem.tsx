@@ -37,6 +37,7 @@ import {
 import { firestore } from "../../firebase/clientApp";
 import { useRecoilState } from "recoil";
 
+// post type
 type PostItemProps = {
   post: Post;
   isCreator: boolean;
@@ -93,6 +94,8 @@ const PostItem: React.FC<PostItemProps> = ({
 
     setLoadingDelete(false);
   };
+
+  //Tweet
   const handleTweet = async () => {
     try {
         // const setPostSuccess = onTweet;
