@@ -14,7 +14,6 @@ const SubmitPostPage: React.FC = () => {
   // const channelStateValue = useRecoilValue(channelState);
   // console.log(channelStateValue);
   const { channelStateValue } = useChannelState();
-  // console.log(channelStateValue);
 
   return (
     <ContentLayout>

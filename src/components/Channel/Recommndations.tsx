@@ -14,7 +14,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FaReddit } from "react-icons/fa";
 import { firestore } from "../../firebase/clientApp";
-import {Channel} from "../../state/channelState";
+import { Channel } from "../../state/channelState";
 import useChannelState from "../../hooks/useChannelState";
 
 type RecommendationsProps = {};
@@ -31,6 +31,7 @@ const Recommendations: React.FC<RecommendationsProps> = () => {
     const getChannelRecommendations = async () => {
         setLoading(true);
         try {
+            // Query the "channels" collection in Firestore, order by "noOfMember" in descending order, and limit to 5 documents
             const channelQuery = query(
                 collection(firestore, "channels"),
                 orderBy("noOfMember", "desc"),
@@ -51,6 +52,7 @@ const Recommendations: React.FC<RecommendationsProps> = () => {
     };
 
     useEffect(() => {
+        // Retrieve channel recommendations when the component mounts
         getChannelRecommendations();
     }, []);
 
@@ -80,6 +82,7 @@ const Recommendations: React.FC<RecommendationsProps> = () => {
             <Flex direction="column">
                 {loading ? (
                     <Stack mt={2} p={3}>
+                        {/* Skeleton placeholders for loading state */}
                         <Flex justify="space-between" align="center">
                             <SkeletonCircle size="10" />
                             <Skeleton height="10px" width="70%" />
@@ -96,6 +99,7 @@ const Recommendations: React.FC<RecommendationsProps> = () => {
                 ) : (
                     <>
                         {channels.map((item, index) => {
+                            // Check if the channel is already joined by the user
                             const isJoined = !!channelStateValue.channels.find(
                                 (channel) => channel.channelName === item.channelName
                             );
@@ -140,6 +144,7 @@ const Recommendations: React.FC<RecommendationsProps> = () => {
                                             </Flex>
                                         </Flex>
                                         <Box position="absolute" right="10px">
+                                            {/* Button tojoin or leave the channel */}
                                             <Button
                                                 height="22px"
                                                 fontSize="8pt"
@@ -162,4 +167,5 @@ const Recommendations: React.FC<RecommendationsProps> = () => {
         </Flex>
     );
 };
+
 export default Recommendations;

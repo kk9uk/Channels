@@ -30,6 +30,7 @@ const UserPage: React.FC = () => {
     const currentUser = getAuth().currentUser?.uid;
     const { uid } = router.query;
 
+    // Fetches the user data from Firestore based on the uid
     const fetchUser = async (uid: string) => {
         try {
             const userRef = collection(firestore, "users");
@@ -61,6 +62,7 @@ const UserPage: React.FC = () => {
         }
     };
 
+    // Fetches the posts created by the user
     const buildUserProfileFeed = useCallback(async () => {
         setLoading(true);
         try {
@@ -89,62 +91,51 @@ const UserPage: React.FC = () => {
         console.log("query:", uid);
         console.log("userStateValue.selectedUser:", userStateValue.selectedUser);
         if (uid) {
-            console.log("fetching is processing")
             fetchUser(uid as string);
             buildUserProfileFeed();
         }
-        console.log("selected User ", userStateValue.selectedUser);
     }, [router.query]);
 
+    // Fetches the user data and builds the user's profile feed when the selected user changes or when the current user changes
     useEffect(() => {
-        // const current_user = getAuth();
-        console.log("useEffect is running on properly")
-        console.log("query:", uid);
-        console.log("userStateValue.selectedUser:", userStateValue.selectedUser);
         if (uid && !userStateValue.selectedUser) {
-            console.log("fetching is processing")
             fetchUser(uid as string);
             buildUserProfileFeed();
         }
-        console.log("selected User ", userStateValue.selectedUser);
-
     }, [userStateValue.selectedUser, buildUserProfileFeed, uid, fetchUser, currentUser]);
 
     return (
         <ContentLayout>
             <>
-            {loading ? (
-          <PostLoader />
-        ) : (
-                <Stack>
-                    {postStateVal.postList.length === 0 && (
-                        <UserPostNotFound>
-                        </UserPostNotFound>
-                    )}
+                {loading ? (
+                    <PostLoader />
+                ) : (
+                    <Stack>
+                        {postStateVal.postList.length === 0 && (
+                            <UserPostNotFound />
+                        )}
 
-                    {postStateVal.postList.map((post) => (
-                        <PostItem
-                            key={post.id}
-                            post={post}
-                            isCreator={false}
-                            numPushPull={post.numPushPull}
-                            onPushPull={onPushPull}
-                            onDelete={onDelete}
-                            onSelect={onSelect}
-                            onTweet={onTweet}
-                            userPushPostValue={
-                                postStateVal.postPushPulls.find((item) => item.postId === post.id)
-                                    ?.pushPullValue
-                            }
-                        />
-                    ))}
-                </Stack>
-
-        )}
-
+                        {postStateVal.postList.map((post) => (
+                            <PostItem
+                                key={post.id}
+                                post={post}
+                                isCreator={false}
+                                numPushPull={post.numPushPull}
+                                onPushPull={onPushPull}
+                                onDelete={onDelete}
+                                onSelect={onSelect}
+                                onTweet={onTweet}
+                                userPushPostValue={
+                                    postStateVal.postPushPulls.find((item) => item.postId === post.id)?.pushPullValue
+                                }
+                            />
+                        ))}
+                    </Stack>
+                )}
             </>
+
             <>
-                {!userStateValue.selectedUser && <UserNotFound/>}
+                {!userStateValue.selectedUser && <UserNotFound />}
                 {userStateValue.selectedUser && <UserHeader user={userStateValue.selectedUser} />}
             </>
         </ContentLayout>

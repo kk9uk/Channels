@@ -23,6 +23,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
                                                    }) => {
 
     return (
+        // ui design
         <Flex direction="column" position="relative">
             {user ? (
                 <>

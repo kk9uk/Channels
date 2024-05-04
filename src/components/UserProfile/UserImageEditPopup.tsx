@@ -31,8 +31,10 @@ const UserImageEditPopupProp: FunctionComponent<EditImagePopupProp> = ({
                                                                            onClose,
                                                                        }) => {
     const selectedFileRef = useRef<HTMLInputElement>(null);
+    const {selectedFile, setSelectedFile} = useSelectFile();
     const router =useRouter()
 
+    // Function to handle image upload
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
 
@@ -49,8 +51,8 @@ const UserImageEditPopupProp: FunctionComponent<EditImagePopupProp> = ({
         }
     };
 
-    const {selectedFile, setSelectedFile} = useSelectFile();
 
+    // Function to save the uploaded image
     const saveImage = async () => {
         try {
             const userDocRef = doc(firestore, "users", user.id);

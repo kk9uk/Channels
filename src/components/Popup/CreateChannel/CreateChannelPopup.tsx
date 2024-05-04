@@ -3,20 +3,21 @@ import { Box, Button, Divider, Input, Modal, ModalBody, ModalCloseButton, ModalC
 import { auth, firestore } from "../../../firebase/clientApp";
 import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
 type CreateChannelPopupProp = {
     isOpened: boolean;
     onClose: () => void;
 };
 
+// CreateChannelPopup component
 const CreateChannelPopup: FunctionComponent<CreateChannelPopupProp> = ({ isOpened, onClose }) => {
-    const [channelName, setChannelName] = useState("");
-    const [charsRemaining, setCharsRemaining] = useState(21);
-    const [error, setError] = useState("");
-    const [user] = useAuthState(auth);
-    const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter()
+    const [channelName, setChannelName] = useState(""); // State for storing the channel name
+    const [charsRemaining, setCharsRemaining] = useState(21); // State for storing the remaining characters
+    const [error, setError] = useState(""); // State for storing error message
+    const [user] = useAuthState(auth); // Fetching the current authenticated user
+    const [isLoading, setIsLoading] = useState(false); // State for tracking loading state
+    const router = useRouter(); // Router object for navigation
 
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.value.length > 21) return;
@@ -50,11 +51,11 @@ const CreateChannelPopup: FunctionComponent<CreateChannelPopupProp> = ({ isOpene
                 });
 
                 transaction.set(doc(firestore, `users/${user?.uid}/channels`, channelName),
-                                {
-                                    channelName: channelName,
-                                    isAdmin: true,
-                                    iconUrl: ""
-                                }
+                    {
+                        channelName: channelName,
+                        isAdmin: true,
+                        iconUrl: ""
+                    }
                 );
                 onClose();
                 setIsLoading(false);
@@ -63,16 +64,18 @@ const CreateChannelPopup: FunctionComponent<CreateChannelPopupProp> = ({ isOpene
         } catch (error: any) {
             console.log("CreateChannelPopup: ", error);
             setError(error.message);
-        };
+        }
 
         setIsLoading(false);
     };
 
     return (
         <>
+            {/* Modal component */}
             <Modal isOpen={isOpened} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent>
+                    {/* ModalHeader */}
                     <ModalHeader
                         display="flex"
                         flexDirection="column"
@@ -90,6 +93,7 @@ const CreateChannelPopup: FunctionComponent<CreateChannelPopupProp> = ({ isOpene
                             flexDirection="column"
                             padding="10px 0px"
                         >
+                            {/* Channel Name */}
                             <Text fontWeight={600} fontSize={15} ml={1}>
                                 Channel Name
                             </Text>
@@ -101,6 +105,7 @@ const CreateChannelPopup: FunctionComponent<CreateChannelPopupProp> = ({ isOpene
                             <Text fontSize="9pt" color="red" pt={1}>{error}</Text>
                         </ModalBody>
                     </Box>
+                    {/* ModalFooter */}
                     <ModalFooter bg="gray.100" borderRadius="0px 0px 10px 10px">
                         <Button height="30px" onClick={onClick} isLoading={isLoading}>
                             Create Channel

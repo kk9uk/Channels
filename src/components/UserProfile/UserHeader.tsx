@@ -32,15 +32,8 @@ const UserHeader: React.FC<UserHeaderProp> = ({user}) => {
     const router = useRouter();
     const checkFollow = useRecoilValue(userFollowerState);
     const isFollowed = !!checkFollow.follow.find(item => item.followerId === user.uid);
-    // const [ isSelfUser, setIsSelfUser ] = useState(false);
     const currentUser = getAuth().currentUser?.uid;
-    console.log(checkFollow);
-    console.log(userAuthState);
-    // console.log(user.id);
 
-    // if (userAuthState?.uid == user.uid) {
-    //     setIsSelfUser(true);
-    // }
 
     const handleIntroductionChange = (
         event: React.ChangeEvent<HTMLTextAreaElement>
